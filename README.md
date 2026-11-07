@@ -1,5 +1,3 @@
-# kaspa-block
-
 Interactive anatomy of a Kaspa block (Block v2, Tx v1): live mainnet data, a to-scale wire-byte map, DAG walks, transaction dissection and a guided peel of the block. Plain HTML, CSS and ES modules. No dependencies, no build step needed to run.
 
 ## Search
