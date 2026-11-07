@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#efede7" />
+  <meta name="theme-color" content="#0a0b0d" />
   <meta name="color-scheme" content="light dark" />
   <meta name="description" content="Interactive anatomy of a Kaspa block: live mainnet data, to-scale wire bytes, DAG walks and transaction dissection. Search any block or transaction." />
   <title>Anatomy of a Kaspa block</title>
@@ -11,12 +11,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script>
-  /* theme boot: stored choice wins, else follow the system */
+  /* theme boot: stored choice wins, else dark */
   (function () {
-    var colors = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
+    var colors = { dark: '#0a0b0d', sepia: '#e6dccf' };
     try {
       var t = localStorage.getItem('kba-theme');
-      if (!colors[t]) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (!colors[t]) t = 'dark';
       document.documentElement.setAttribute('data-theme', t);
       var m = document.querySelector('meta[name="theme-color"]');
       if (m) m.setAttribute('content', colors[t]);
@@ -42,11 +42,8 @@
           <button type="button" id="btn-sfx" class="ctrl-btn mono" title="Sound effects">sfx</button>
         </div>
         <div class="theme-group" role="group" aria-label="Color theme">
-          <button type="button" data-set-theme="light" class="ctrl-btn mono">light</button>
-          <button type="button" data-set-theme="paper" class="ctrl-btn mono">paper</button>
-          <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
-          <button type="button" data-set-theme="blueprint" class="ctrl-btn mono">blueprint</button>
           <button type="button" data-set-theme="dark" class="ctrl-btn mono">dark</button>
+          <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
         </div>
       </div>
     </header>

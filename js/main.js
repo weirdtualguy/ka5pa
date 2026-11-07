@@ -28,7 +28,7 @@ function boot() {
   initKeyboard();
 
   /* theme from the boot script / storage */
-  state.theme = document.documentElement.getAttribute('data-theme') || 'light';
+  state.theme = document.documentElement.getAttribute('data-theme') || 'dark';
 
   /* A's bootstrap sequence */
   const nerdOn = store.get('kba-nerd') === '1';

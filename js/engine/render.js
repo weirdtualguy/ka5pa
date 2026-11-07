@@ -17,7 +17,7 @@ export const QUIET = 0.0006;
 /* A's shared state — same fields, same defaults (tourActive is now driven by the
    guided flow, which replaces the Idle Tour). */
 export const state = {
-  theme: 'light',
+  theme: 'dark',
   station: 0,
   tourActive: false,
   tourTimer: 0,
@@ -274,7 +274,7 @@ export function updateFastKinematicsAndCanvas(now) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const sx = canvas.width / VB.w, sy = canvas.height / VB.h, ox = VB.x, oy = VB.y;
-  const isDark = state.theme === 'dark' || state.theme === 'blueprint';
+  const isDark = state.theme === 'dark';
   const baseSprite = glowSprite(isDark, true);
   const pulseSprite = glowSprite(isDark, false);
 

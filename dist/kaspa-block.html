@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#efede7" />
+  <meta name="theme-color" content="#0a0b0d" />
   <meta name="color-scheme" content="light dark" />
   <meta name="description" content="Interactive anatomy of a Kaspa block: live mainnet data, to-scale wire bytes, DAG walks and transaction dissection. Search any block or transaction." />
   <title>Anatomy of a Kaspa block</title>
@@ -11,12 +11,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script>
-  /* theme boot: stored choice wins, else follow the system */
+  /* theme boot: stored choice wins, else dark */
   (function () {
-    var colors = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
+    var colors = { dark: '#0a0b0d', sepia: '#e6dccf' };
     try {
       var t = localStorage.getItem('kba-theme');
-      if (!colors[t]) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (!colors[t]) t = 'dark';
       document.documentElement.setAttribute('data-theme', t);
       var m = document.querySelector('meta[name="theme-color"]');
       if (m) m.setAttribute('content', colors[t]);
@@ -25,93 +25,50 @@
   </script>
   <style>
 :root,
-[data-theme="light"] {
---anatomy-card: #f7f6f2;
---anatomy-paper: #f7f6f2;
---anatomy-top: #ffffff;
---anatomy-shade-0: #d6d3cb;
---anatomy-shade-1: #e2dfd8;
---anatomy-shade-2: #eceae4;
---anatomy-shade-3: #f4f3ef;
---anatomy-face: #18181b;
---anatomy-lit-top: #fff7ed;
---anatomy-lit-shade: #fed7aa;
---anatomy-hi: #141413;
---anatomy-mid: #52514e;
---anatomy-lo: #8c8a84;
---anatomy-faint: #cbc8c0;
---anatomy-dot: #787670;
---anatomy-halo: #d0cdc4;
---anatomy-lit: #ea580c;
---anatomy-red: #dc2626;
---anatomy-green: #0d9488;
---anatomy-blue: #2563eb;
---anatomy-purple: #7c3aed;
---anatomy-text: #1c1b18;
---anatomy-muted: #6e6c66;
---anatomy-strong: #09090b;
+[data-theme="dark"] {
+--anatomy-card: #111315;
+--anatomy-paper: #111315;
+--anatomy-top: #26292e;
+--anatomy-shade-0: #141619;
+--anatomy-shade-1: #181b1f;
+--anatomy-shade-2: #1d2025;
+--anatomy-shade-3: #22252b;
+--anatomy-face: #fafafa;
+--anatomy-lit-top: #134e4a;
+--anatomy-lit-shade: #0f766e;
+--anatomy-hi: #f4f4f5;
+--anatomy-mid: #a1a1aa;
+--anatomy-lo: #636973;
+--anatomy-faint: #2e3239;
+--anatomy-dot: #868d98;
+--anatomy-halo: #000000;
+--anatomy-lit: #2dd4bf;
+--anatomy-red: #f87171;
+--anatomy-green: #4ade80;
+--anatomy-blue: #60a5fa;
+--anatomy-purple: #c4b5fd;
+--anatomy-text: #e4e4e7;
+--anatomy-muted: #8e929b;
+--anatomy-strong: #ffffff;
 --anatomy-weight: 0.65px;
---anatomy-halo-opacity: 0.36;
---page-bg: #efede7;
---panel-bg: #f7f6f2;
---panel-border: #dcd9d0;
---hl: rgba(255, 255, 255, .78);
---drop: rgba(52, 42, 26, .13);
---drop-2: rgba(52, 42, 26, .08);
---floor: rgba(52, 42, 26, .20);
---grid: color-mix(in srgb, var(--anatomy-lo) 30%, transparent);
+--anatomy-halo-opacity: 0.85;
+--page-bg: #0a0b0d;
+--panel-bg: #111315;
+--panel-border: #23272e;
+--hl: rgba(255, 255, 255, .06);
+--drop: rgba(0, 0, 0, .55);
+--drop-2: rgba(0, 0, 0, .38);
+--floor: rgba(0, 0, 0, .65);
+--grid: color-mix(in srgb, var(--anatomy-lo) 26%, transparent);
 --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 --font-title: 'EB Garamond', Georgia, serif;
 --font-label: 'JetBrains Mono', ui-monospace, monospace;
 --font-hand: 'EB Garamond', Georgia, serif;
 --font-num: 'JetBrains Mono', ui-monospace, monospace;
---bs-version: #2563eb; --bs-parents: #a8a29e; --bs-hashMerkle: #b45309; --bs-seqCommit: #0d9488;
---bs-utxoCommit: #7c3aed; --bs-timestamp: #64748b; --bs-bits: #64748b; --bs-nonce: #64748b;
---bs-daaScore: #64748b; --bs-blueScore: #64748b; --bs-blueWork: #475569; --bs-pruningPoint: #94a3b8;
-}
-[data-theme="paper"] {
---anatomy-card: #fcfbf9;
---anatomy-paper: #fcfbf9;
---anatomy-top: #ffffff;
---anatomy-shade-0: #dedad0;
---anatomy-shade-1: #e8e4dc;
---anatomy-shade-2: #f1eee8;
---anatomy-shade-3: #f8f6f2;
---anatomy-face: #1c1917;
---anatomy-lit-top: #fef3c7;
---anatomy-lit-shade: #fde68a;
---anatomy-hi: #1c1917;
---anatomy-mid: #57534e;
---anatomy-lo: #8a847c;
---anatomy-faint: #d6d3cd;
---anatomy-dot: #78716c;
---anatomy-halo: #d6d1c7;
---anatomy-lit: #b45309;
---anatomy-red: #b91c1c;
---anatomy-green: #0f766e;
---anatomy-blue: #1d4ed8;
---anatomy-purple: #6d28d9;
---anatomy-text: #1c1917;
---anatomy-muted: #78716c;
---anatomy-strong: #0c0a09;
---anatomy-weight: 0.6px;
---anatomy-halo-opacity: 0.3;
---page-bg: #f3f1ec;
---panel-bg: #fcfbf9;
---panel-border: #e2ded5;
---hl: rgba(255, 255, 255, .78);
---drop: rgba(52, 42, 26, .13);
---drop-2: rgba(52, 42, 26, .08);
---floor: rgba(52, 42, 26, .20);
---grid: color-mix(in srgb, var(--anatomy-lo) 30%, transparent);
---font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
---font-title: 'EB Garamond', Georgia, serif;
---font-label: 'JetBrains Mono', ui-monospace, monospace;
---font-hand: 'EB Garamond', Georgia, serif;
---font-num: 'JetBrains Mono', ui-monospace, monospace;
---bs-version: #1d4ed8; --bs-parents: #a8a29e; --bs-hashMerkle: #b45309; --bs-seqCommit: #0f766e;
---bs-utxoCommit: #6d28d9; --bs-timestamp: #64748b; --bs-bits: #64748b; --bs-nonce: #64748b;
---bs-daaScore: #64748b; --bs-blueScore: #64748b; --bs-blueWork: #475569; --bs-pruningPoint: #94a3b8;
+--bs-version: #5b8dd6; --bs-parents: #353b44; --bs-hashMerkle: #c99a3e; --bs-seqCommit: #3fa89b;
+--bs-utxoCommit: #8b7bc8; --bs-timestamp: #6b7684; --bs-bits: #6b7684; --bs-nonce: #6b7684;
+--bs-daaScore: #6b7684; --bs-blueScore: #6b7684; --bs-blueWork: #7d8896; --bs-pruningPoint: #444c57;
+--bs-edge: #111315;
 }
 [data-theme="sepia"] {
 --anatomy-card: #f2eadf;
@@ -153,103 +110,13 @@
 --font-label: 'JetBrains Mono', ui-monospace, monospace;
 --font-hand: 'EB Garamond', Georgia, serif;
 --font-num: 'JetBrains Mono', ui-monospace, monospace;
---bs-version: #1e40af; --bs-parents: #a8977c; --bs-hashMerkle: #b45309; --bs-seqCommit: #115e59;
---bs-utxoCommit: #6b21a8; --bs-timestamp: #85755f; --bs-bits: #85755f; --bs-nonce: #85755f;
---bs-daaScore: #85755f; --bs-blueScore: #85755f; --bs-blueWork: #6e5d4b; --bs-pruningPoint: #a8977c;
-}
-[data-theme="blueprint"] {
---anatomy-card: #0d233a;
---anatomy-paper: #0d233a;
---anatomy-top: #1c3d5e;
---anatomy-shade-0: #0f2942;
---anatomy-shade-1: #13304d;
---anatomy-shade-2: #163656;
---anatomy-shade-3: #193b5c;
---anatomy-face: #e0f2fe;
---anatomy-lit-top: #0284c7;
---anatomy-lit-shade: #0369a1;
---anatomy-hi: #f0f9ff;
---anatomy-mid: #93c5fd;
---anatomy-lo: #5b8cc4;
---anatomy-faint: #1e4268;
---anatomy-dot: #7dd3fc;
---anatomy-halo: #051220;
---anatomy-lit: #38bdf8;
---anatomy-red: #fca5a5;
---anatomy-green: #5eead4;
---anatomy-blue: #93c5fd;
---anatomy-purple: #c4b5fd;
---anatomy-text: #e0f2fe;
---anatomy-muted: #7aa6d6;
---anatomy-strong: #ffffff;
---anatomy-weight: 0.65px;
---anatomy-halo-opacity: 0.7;
---page-bg: #081829;
---panel-bg: #0d233a;
---panel-border: #1e4268;
---hl: rgba(190, 225, 255, .10);
---drop: rgba(2, 10, 22, .55);
---drop-2: rgba(2, 10, 22, .38);
---floor: rgba(2, 10, 22, .55);
---grid: color-mix(in srgb, var(--anatomy-dot) 24%, transparent);
---font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
---font-title: 'EB Garamond', Georgia, serif;
---font-label: 'JetBrains Mono', ui-monospace, monospace;
---font-hand: 'EB Garamond', Georgia, serif;
---font-num: 'JetBrains Mono', ui-monospace, monospace;
---bs-version: #93c5fd; --bs-parents: #1e4268; --bs-hashMerkle: #fbbf24; --bs-seqCommit: #5eead4;
---bs-utxoCommit: #c4b5fd; --bs-timestamp: #7dd3fc; --bs-bits: #7dd3fc; --bs-nonce: #7dd3fc;
---bs-daaScore: #7dd3fc; --bs-blueScore: #7dd3fc; --bs-blueWork: #38bdf8; --bs-pruningPoint: #93c5fd;
-}
-[data-theme="dark"] {
---anatomy-card: #111315;
---anatomy-paper: #111315;
---anatomy-top: #26292e;
---anatomy-shade-0: #141619;
---anatomy-shade-1: #181b1f;
---anatomy-shade-2: #1d2025;
---anatomy-shade-3: #22252b;
---anatomy-face: #fafafa;
---anatomy-lit-top: #134e4a;
---anatomy-lit-shade: #0f766e;
---anatomy-hi: #f4f4f5;
---anatomy-mid: #a1a1aa;
---anatomy-lo: #636973;
---anatomy-faint: #2e3239;
---anatomy-dot: #868d98;
---anatomy-halo: #000000;
---anatomy-lit: #2dd4bf;
---anatomy-red: #f87171;
---anatomy-green: #4ade80;
---anatomy-blue: #60a5fa;
---anatomy-purple: #c4b5fd;
---anatomy-text: #e4e4e7;
---anatomy-muted: #8e929b;
---anatomy-strong: #ffffff;
---anatomy-weight: 0.65px;
---anatomy-halo-opacity: 0.85;
---page-bg: #0a0b0d;
---panel-bg: #111315;
---panel-border: #23272e;
---hl: rgba(255, 255, 255, .06);
---drop: rgba(0, 0, 0, .55);
---drop-2: rgba(0, 0, 0, .38);
---floor: rgba(0, 0, 0, .65);
---grid: color-mix(in srgb, var(--anatomy-lo) 26%, transparent);
---font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
---font-title: 'EB Garamond', Georgia, serif;
---font-label: 'JetBrains Mono', ui-monospace, monospace;
---font-hand: 'EB Garamond', Georgia, serif;
---font-num: 'JetBrains Mono', ui-monospace, monospace;
---bs-version: #60a5fa; --bs-parents: #2e3239; --bs-hashMerkle: #fbbf24; --bs-seqCommit: #4ade80;
---bs-utxoCommit: #c4b5fd; --bs-timestamp: #868d98; --bs-bits: #868d98; --bs-nonce: #868d98;
---bs-daaScore: #868d98; --bs-blueScore: #868d98; --bs-blueWork: #a1a1aa; --bs-pruningPoint: #636973;
+--bs-version: #4f6f9a; --bs-parents: #b9a98e; --bs-hashMerkle: #b9732f; --bs-seqCommit: #4b8077;
+--bs-utxoCommit: #82689a; --bs-timestamp: #a39378; --bs-bits: #a39378; --bs-nonce: #a39378;
+--bs-daaScore: #a39378; --bs-blueScore: #a39378; --bs-blueWork: #8f7f66; --bs-pruningPoint: #c9baa0;
+--bs-edge: #f2eadf;
 }
 :root,
-[data-theme="light"],
-[data-theme="paper"],
 [data-theme="sepia"],
-[data-theme="blueprint"],
 [data-theme="dark"] {
 --ink: var(--anatomy-face);
 --lead: var(--anatomy-muted);
@@ -270,11 +137,6 @@
 --desk: var(--page-bg);
 --blue: var(--anatomy-blue);
 --rose: var(--anatomy-red);
-}
-@media (prefers-color-scheme: dark) {
-:root:not([data-theme]) {
-background: #0a0b0d;
-}
 }
 </style>
   <style>
@@ -675,8 +537,8 @@ stroke-linejoin: round;
 .bs-cap { font-family: var(--font-hand); font-size: 13px; letter-spacing: 1.4px; fill: var(--ink, var(--anatomy-strong)); }
 .bs-note { font-family: var(--font-label); font-size: 8.5px; fill: var(--lead, var(--anatomy-muted)); }
 .bs-small { font-family: var(--font-hand); font-size: 11px; fill: var(--lead, var(--anatomy-muted)); }
-.bs-seg { cursor: pointer; stroke: var(--ink, var(--anatomy-strong)); stroke-width: .9; }
-.bs-seg:hover { opacity: .82; }
+.bs-seg { cursor: pointer; stroke: var(--bs-edge); stroke-width: 1.5; stroke-linejoin: round; transition: filter .15s ease; }
+.bs-seg:hover { filter: brightness(1.15); }
 .bs-version { fill: var(--bs-version); } .bs-parents { fill: var(--bs-parents); }
 .bs-hashMerkle { fill: var(--bs-hashMerkle); } .bs-seqCommit { fill: var(--bs-seqCommit); }
 .bs-utxoCommit { fill: var(--bs-utxoCommit); } .bs-timestamp { fill: var(--bs-timestamp); }
@@ -1711,7 +1573,7 @@ const SUB_RATE = 240;
 const QUIET = 0.0006;
 
 const state = {
-  theme: 'light',
+  theme: 'dark',
   station: 0,
   tourActive: false,
   tourTimer: 0,
@@ -1960,7 +1822,7 @@ function updateFastKinematicsAndCanvas(now) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const sx = canvas.width / VB.w, sy = canvas.height / VB.h, ox = VB.x, oy = VB.y;
-  const isDark = state.theme === 'dark' || state.theme === 'blueprint';
+  const isDark = state.theme === 'dark';
   const baseSprite = glowSprite(isDark, true);
   const pulseSprite = glowSprite(isDark, false);
 
@@ -2367,7 +2229,7 @@ function initControls() {
       document.documentElement.setAttribute('data-theme', t);
       store.set('kba-theme', t);
       const tc = document.querySelector('meta[name="theme-color"]');
-      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.light);
+      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.dark);
       cdom.themeButtons.forEach(b => {
         const on = b.getAttribute('data-set-theme') === t;
         b.classList.toggle('active', on);
@@ -2451,7 +2313,7 @@ function initControls() {
   return { paintSfx };
 }
 
-const THEME_COLORS = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
+const THEME_COLORS = { dark: '#0a0b0d', sepia: '#e6dccf' };
 
 const stage = document.getElementById('iso-stage');
 const BASE = { x: 100, y: -30, w: 800, h: 600 };
@@ -4281,7 +4143,7 @@ function boot() {
   initShare();
   initKeyboard();
 
-  state.theme = document.documentElement.getAttribute('data-theme') || 'light';
+  state.theme = document.documentElement.getAttribute('data-theme') || 'dark';
 
   const nerdOn = store.get('kba-nerd') === '1';
   setNerd(nerdOn);
@@ -4314,11 +4176,8 @@ boot();
           <button type="button" id="btn-sfx" class="ctrl-btn mono" title="Sound effects">sfx</button>
         </div>
         <div class="theme-group" role="group" aria-label="Color theme">
-          <button type="button" data-set-theme="light" class="ctrl-btn mono">light</button>
-          <button type="button" data-set-theme="paper" class="ctrl-btn mono">paper</button>
-          <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
-          <button type="button" data-set-theme="blueprint" class="ctrl-btn mono">blueprint</button>
           <button type="button" data-set-theme="dark" class="ctrl-btn mono">dark</button>
+          <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
         </div>
       </div>
     </header>

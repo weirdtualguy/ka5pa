@@ -195,7 +195,7 @@ async function main() {
     await click('[data-set-theme="dark"]');
     await sleep(500);
     await shot(label + '-8-dark');
-    await click('[data-set-theme="sketchbook"]');
+    await click('[data-set-theme="sepia"]');
     await sleep(400);
     await evaljs(`window.dispatchEvent(new KeyboardEvent('keydown',{key:'+',bubbles:true})); window.dispatchEvent(new KeyboardEvent('keydown',{key:'0',bubbles:true}))`);
     await check('zoom label resets to 1.0×', `document.getElementById('zoom-lbl').textContent.trim().startsWith('1.0')`);

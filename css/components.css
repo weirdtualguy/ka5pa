@@ -215,8 +215,8 @@ input[type="range"] { width: 100%; min-width: 0; accent-color: var(--anatomy-lit
 .bs-cap { font-family: var(--font-hand); font-size: 13px; letter-spacing: 1.4px; fill: var(--ink, var(--anatomy-strong)); }
 .bs-note { font-family: var(--font-label); font-size: 8.5px; fill: var(--lead, var(--anatomy-muted)); }
 .bs-small { font-family: var(--font-hand); font-size: 11px; fill: var(--lead, var(--anatomy-muted)); }
-.bs-seg { cursor: pointer; stroke: var(--ink, var(--anatomy-strong)); stroke-width: .9; }
-.bs-seg:hover { opacity: .82; }
+.bs-seg { cursor: pointer; stroke: var(--bs-edge); stroke-width: 1.5; stroke-linejoin: round; transition: filter .15s ease; }
+.bs-seg:hover { filter: brightness(1.15); }
 .bs-version { fill: var(--bs-version); } .bs-parents { fill: var(--bs-parents); }
 .bs-hashMerkle { fill: var(--bs-hashMerkle); } .bs-seqCommit { fill: var(--bs-seqCommit); }
 .bs-utxoCommit { fill: var(--bs-utxoCommit); } .bs-timestamp { fill: var(--bs-timestamp); }

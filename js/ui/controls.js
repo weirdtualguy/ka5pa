@@ -296,7 +296,7 @@ export function initControls() {
       document.documentElement.setAttribute('data-theme', t);
       store.set('kba-theme', t);
       const tc = document.querySelector('meta[name="theme-color"]');
-      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.light);
+      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.dark);
       cdom.themeButtons.forEach(b => {
         const on = b.getAttribute('data-set-theme') === t;
         b.classList.toggle('active', on);
@@ -385,4 +385,4 @@ export function initControls() {
   return { paintSfx };
 }
 
-const THEME_COLORS = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
+const THEME_COLORS = { dark: '#0a0b0d', sepia: '#e6dccf' };
