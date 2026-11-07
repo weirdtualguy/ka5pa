@@ -1,0 +1,12 @@
+{
+  "name": "kaspa-block",
+  "private": true,
+  "type": "module",
+  "description": "Interactive anatomy of a Kaspa block (Block v2 / Tx v1). Zero dependencies.",
+  "scripts": {
+    "test": "node --test tests/machine.test.mjs tests/fields.test.mjs",
+    "serve": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "verify": "node scripts/verify.mjs"
+  }
+}

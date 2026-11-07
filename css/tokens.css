@@ -1,0 +1,355 @@
+/* css/tokens.css — every colour/size as CSS variables; one block per theme. The
+   26 A tokens keep their names; sketchbook adds B's marker palette (--ink, --lead,
+   --wax, --paper, --paper-lit, --marker-*) for the hand-drawn overlays + strip. */
+
+/* ---------- SKETCHBOOK (B's look, default) ---------- */
+:root,
+[data-theme="sketchbook"] {
+  --anatomy-card: #f4efe3;
+  --anatomy-paper: #f4efe3;
+  --anatomy-top: #fdf9f1;
+  --anatomy-shade-0: #d8cdb6;
+  --anatomy-shade-1: #e0d7c2;
+  --anatomy-shade-2: #e9e1cf;
+  --anatomy-shade-3: #f1ead9;
+  --anatomy-face: #2f261e;
+  --anatomy-lit-top: #f6e3c9;
+  --anatomy-lit-shade: #ddba88;
+  --anatomy-hi: #2f261e;
+  --anatomy-mid: #6f6150;
+  --anatomy-lo: #a4977f;
+  --anatomy-faint: #d9cfbb;
+  --anatomy-dot: #8a8174;
+  --anatomy-halo: #e3d9c3;
+  --anatomy-lit: #b23a38;
+  --anatomy-red: #c98d7a;
+  --anatomy-green: #5f9c96;
+  --anatomy-blue: #7d9fc0;
+  --anatomy-purple: #8f7ba6;
+  --anatomy-text: #2f261e;
+  --anatomy-muted: #8a8174;
+  --anatomy-strong: #241c14;
+  --anatomy-weight: 0.9px;
+  --anatomy-halo-opacity: 0.5;
+  --anatomy-hatch: rgba(47, 38, 30, 0.30);
+  --anatomy-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --page-bg: #e3dac8;
+  --panel-bg: #f4efe3;
+  --panel-border: #d8ccb4;
+
+  /* B's sketchbook tokens */
+  --desk: #e3dac8;
+  --paper: #f4efe3;
+  --paper-lit: #fbf6ec;
+  --ink: #2f261e;
+  --lead: #8a8174;
+  --wax: #b04a3a;
+  --red: #b23a38;
+  --gold: #e5b45a;
+  --steel: #c3ccd2;
+  --steel-dark: #93a2ab;
+  --brass: #c9a05a;
+  --teal: #5f9c96;
+  --plum: #8f7ba6;
+  --tray: #c8b28a;
+  --marker-paper: #f1e7d4;
+  --marker-gold: #d9a441;
+  --marker-teal: #5f9c96;
+  --marker-plum: #8f7ba6;
+
+  /* byte-strip segment colours (B's marker ramp, via fields.js key) */
+  --bs-version: #93a2ab;
+  --bs-parents: #d8cdb6;
+  --bs-hashMerkle: #c9a05a;
+  --bs-seqCommit: #5f9c96;
+  --bs-utxoCommit: #8f7ba6;
+  --bs-timestamp: #c3ccd2;
+  --bs-bits: #c3ccd2;
+  --bs-nonce: #c3ccd2;
+  --bs-daaScore: #c3ccd2;
+  --bs-blueScore: #c3ccd2;
+  --bs-blueWork: #c3ccd2;
+  --bs-pruningPoint: #6b6660;
+
+  /* depth model (A's v10.1 tokens, tuned for paper) */
+  --hl: rgba(255, 253, 246, 0.9);
+  --drop: rgba(52, 42, 26, 0.16);
+  --drop-2: rgba(52, 42, 26, 0.08);
+  --floor: rgba(52, 42, 26, 0.20);
+  --grid: color-mix(in srgb, var(--anatomy-lo) 34%, transparent);
+
+  --font-ui: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'Young Serif', Georgia, serif;
+  --font-label: 'Cutive Mono', 'Courier Prime', 'Courier New', monospace;
+  --font-hand: 'Gaegu', 'DM Sans', cursive;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ---------- LIGHT (A's original) ---------- */
+[data-theme="light"] {
+  --anatomy-card: #f7f6f2;
+  --anatomy-paper: #f7f6f2;
+  --anatomy-top: #ffffff;
+  --anatomy-shade-0: #d6d3cb;
+  --anatomy-shade-1: #e2dfd8;
+  --anatomy-shade-2: #eceae4;
+  --anatomy-shade-3: #f4f3ef;
+  --anatomy-face: #18181b;
+  --anatomy-lit-top: #fff7ed;
+  --anatomy-lit-shade: #fed7aa;
+  --anatomy-hi: #141413;
+  --anatomy-mid: #52514e;
+  --anatomy-lo: #8c8a84;
+  --anatomy-faint: #cbc8c0;
+  --anatomy-dot: #787670;
+  --anatomy-halo: #d0cdc4;
+  --anatomy-lit: #ea580c;
+  --anatomy-red: #dc2626;
+  --anatomy-green: #0d9488;
+  --anatomy-blue: #2563eb;
+  --anatomy-purple: #7c3aed;
+  --anatomy-text: #1c1b18;
+  --anatomy-muted: #6e6c66;
+  --anatomy-strong: #09090b;
+  --anatomy-weight: 0.65px;
+  --anatomy-halo-opacity: 0.36;
+  --page-bg: #efede7;
+  --panel-bg: #f7f6f2;
+  --panel-border: #dcd9d0;
+  --hl: rgba(255, 255, 255, .78);
+  --drop: rgba(52, 42, 26, .13);
+  --drop-2: rgba(52, 42, 26, .08);
+  --floor: rgba(52, 42, 26, .20);
+  --grid: color-mix(in srgb, var(--anatomy-lo) 30%, transparent);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'EB Garamond', Georgia, serif;
+  --font-label: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'EB Garamond', Georgia, serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --bs-version: #2563eb; --bs-parents: #a8a29e; --bs-hashMerkle: #b45309; --bs-seqCommit: #0d9488;
+  --bs-utxoCommit: #7c3aed; --bs-timestamp: #64748b; --bs-bits: #64748b; --bs-nonce: #64748b;
+  --bs-daaScore: #64748b; --bs-blueScore: #64748b; --bs-blueWork: #475569; --bs-pruningPoint: #94a3b8;
+}
+
+/* ---------- PAPER (A's) ---------- */
+[data-theme="paper"] {
+  --anatomy-card: #fcfbf9;
+  --anatomy-paper: #fcfbf9;
+  --anatomy-top: #ffffff;
+  --anatomy-shade-0: #dedad0;
+  --anatomy-shade-1: #e8e4dc;
+  --anatomy-shade-2: #f1eee8;
+  --anatomy-shade-3: #f8f6f2;
+  --anatomy-face: #1c1917;
+  --anatomy-lit-top: #fef3c7;
+  --anatomy-lit-shade: #fde68a;
+  --anatomy-hi: #1c1917;
+  --anatomy-mid: #57534e;
+  --anatomy-lo: #8a847c;
+  --anatomy-faint: #d6d3cd;
+  --anatomy-dot: #78716c;
+  --anatomy-halo: #d6d1c7;
+  --anatomy-lit: #b45309;
+  --anatomy-red: #b91c1c;
+  --anatomy-green: #0f766e;
+  --anatomy-blue: #1d4ed8;
+  --anatomy-purple: #6d28d9;
+  --anatomy-text: #1c1917;
+  --anatomy-muted: #78716c;
+  --anatomy-strong: #0c0a09;
+  --anatomy-weight: 0.6px;
+  --anatomy-halo-opacity: 0.3;
+  --page-bg: #f3f1ec;
+  --panel-bg: #fcfbf9;
+  --panel-border: #e2ded5;
+  --hl: rgba(255, 255, 255, .78);
+  --drop: rgba(52, 42, 26, .13);
+  --drop-2: rgba(52, 42, 26, .08);
+  --floor: rgba(52, 42, 26, .20);
+  --grid: color-mix(in srgb, var(--anatomy-lo) 30%, transparent);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'EB Garamond', Georgia, serif;
+  --font-label: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'EB Garamond', Georgia, serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --bs-version: #1d4ed8; --bs-parents: #a8a29e; --bs-hashMerkle: #b45309; --bs-seqCommit: #0f766e;
+  --bs-utxoCommit: #6d28d9; --bs-timestamp: #64748b; --bs-bits: #64748b; --bs-nonce: #64748b;
+  --bs-daaScore: #64748b; --bs-blueScore: #64748b; --bs-blueWork: #475569; --bs-pruningPoint: #94a3b8;
+}
+
+/* ---------- SEPIA (A's) ---------- */
+[data-theme="sepia"] {
+  --anatomy-card: #f2eadf;
+  --anatomy-paper: #f2eadf;
+  --anatomy-top: #faf5ed;
+  --anatomy-shade-0: #cfc1ae;
+  --anatomy-shade-1: #dbcebc;
+  --anatomy-shade-2: #e5dacb;
+  --anatomy-shade-3: #eee5d8;
+  --anatomy-face: #2c2219;
+  --anatomy-lit-top: #ffedd5;
+  --anatomy-lit-shade: #fdba74;
+  --anatomy-hi: #291f16;
+  --anatomy-mid: #5c4d3c;
+  --anatomy-lo: #8c7b67;
+  --anatomy-faint: #c9bba8;
+  --anatomy-dot: #736350;
+  --anatomy-halo: #bfb09b;
+  --anatomy-lit: #c2410c;
+  --anatomy-red: #991b1b;
+  --anatomy-green: #115e59;
+  --anatomy-blue: #1e40af;
+  --anatomy-purple: #6b21a8;
+  --anatomy-text: #291f16;
+  --anatomy-muted: #6e5d4b;
+  --anatomy-strong: #17110b;
+  --anatomy-weight: 0.6px;
+  --anatomy-halo-opacity: 0.35;
+  --page-bg: #e6dccf;
+  --panel-bg: #f2eadf;
+  --panel-border: #d1c3b0;
+  --hl: rgba(255, 250, 237, .7);
+  --drop: rgba(52, 42, 26, .16);
+  --drop-2: rgba(52, 42, 26, .1);
+  --floor: rgba(52, 42, 26, .24);
+  --grid: color-mix(in srgb, var(--anatomy-lo) 30%, transparent);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'EB Garamond', Georgia, serif;
+  --font-label: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'EB Garamond', Georgia, serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --bs-version: #1e40af; --bs-parents: #a8977c; --bs-hashMerkle: #b45309; --bs-seqCommit: #115e59;
+  --bs-utxoCommit: #6b21a8; --bs-timestamp: #85755f; --bs-bits: #85755f; --bs-nonce: #85755f;
+  --bs-daaScore: #85755f; --bs-blueScore: #85755f; --bs-blueWork: #6e5d4b; --bs-pruningPoint: #a8977c;
+}
+
+/* ---------- BLUEPRINT (A's) ---------- */
+[data-theme="blueprint"] {
+  --anatomy-card: #0d233a;
+  --anatomy-paper: #0d233a;
+  --anatomy-top: #1c3d5e;
+  --anatomy-shade-0: #0f2942;
+  --anatomy-shade-1: #13304d;
+  --anatomy-shade-2: #163656;
+  --anatomy-shade-3: #193b5c;
+  --anatomy-face: #e0f2fe;
+  --anatomy-lit-top: #0284c7;
+  --anatomy-lit-shade: #0369a1;
+  --anatomy-hi: #f0f9ff;
+  --anatomy-mid: #93c5fd;
+  --anatomy-lo: #5b8cc4;
+  --anatomy-faint: #1e4268;
+  --anatomy-dot: #7dd3fc;
+  --anatomy-halo: #051220;
+  --anatomy-lit: #38bdf8;
+  --anatomy-red: #fca5a5;
+  --anatomy-green: #5eead4;
+  --anatomy-blue: #93c5fd;
+  --anatomy-purple: #c4b5fd;
+  --anatomy-text: #e0f2fe;
+  --anatomy-muted: #7aa6d6;
+  --anatomy-strong: #ffffff;
+  --anatomy-weight: 0.65px;
+  --anatomy-halo-opacity: 0.7;
+  --page-bg: #081829;
+  --panel-bg: #0d233a;
+  --panel-border: #1e4268;
+  --hl: rgba(190, 225, 255, .10);
+  --drop: rgba(2, 10, 22, .55);
+  --drop-2: rgba(2, 10, 22, .38);
+  --floor: rgba(2, 10, 22, .55);
+  --grid: color-mix(in srgb, var(--anatomy-dot) 24%, transparent);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'EB Garamond', Georgia, serif;
+  --font-label: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'EB Garamond', Georgia, serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --bs-version: #93c5fd; --bs-parents: #1e4268; --bs-hashMerkle: #fbbf24; --bs-seqCommit: #5eead4;
+  --bs-utxoCommit: #c4b5fd; --bs-timestamp: #7dd3fc; --bs-bits: #7dd3fc; --bs-nonce: #7dd3fc;
+  --bs-daaScore: #7dd3fc; --bs-blueScore: #7dd3fc; --bs-blueWork: #38bdf8; --bs-pruningPoint: #93c5fd;
+}
+
+/* ---------- DARK (A's) ---------- */
+[data-theme="dark"] {
+  --anatomy-card: #111315;
+  --anatomy-paper: #111315;
+  --anatomy-top: #26292e;
+  --anatomy-shade-0: #141619;
+  --anatomy-shade-1: #181b1f;
+  --anatomy-shade-2: #1d2025;
+  --anatomy-shade-3: #22252b;
+  --anatomy-face: #fafafa;
+  --anatomy-lit-top: #134e4a;
+  --anatomy-lit-shade: #0f766e;
+  --anatomy-hi: #f4f4f5;
+  --anatomy-mid: #a1a1aa;
+  --anatomy-lo: #636973;
+  --anatomy-faint: #2e3239;
+  --anatomy-dot: #868d98;
+  --anatomy-halo: #000000;
+  --anatomy-lit: #2dd4bf;
+  --anatomy-red: #f87171;
+  --anatomy-green: #4ade80;
+  --anatomy-blue: #60a5fa;
+  --anatomy-purple: #c4b5fd;
+  --anatomy-text: #e4e4e7;
+  --anatomy-muted: #8e929b;
+  --anatomy-strong: #ffffff;
+  --anatomy-weight: 0.65px;
+  --anatomy-halo-opacity: 0.85;
+  --page-bg: #0a0b0d;
+  --panel-bg: #111315;
+  --panel-border: #23272e;
+  --hl: rgba(255, 255, 255, .06);
+  --drop: rgba(0, 0, 0, .55);
+  --drop-2: rgba(0, 0, 0, .38);
+  --floor: rgba(0, 0, 0, .65);
+  --grid: color-mix(in srgb, var(--anatomy-lo) 26%, transparent);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-title: 'EB Garamond', Georgia, serif;
+  --font-label: 'JetBrains Mono', ui-monospace, monospace;
+  --font-hand: 'EB Garamond', Georgia, serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --bs-version: #60a5fa; --bs-parents: #2e3239; --bs-hashMerkle: #fbbf24; --bs-seqCommit: #4ade80;
+  --bs-utxoCommit: #c4b5fd; --bs-timestamp: #868d98; --bs-bits: #868d98; --bs-nonce: #868d98;
+  --bs-daaScore: #868d98; --bs-blueScore: #868d98; --bs-blueWork: #a1a1aa; --bs-pruningPoint: #636973;
+}
+
+/* ---------- B's sketch tokens, remapped per theme ----------
+   The sketch pen and the hand-drawn overlays emit var(--ink)/var(--lead)/… with
+   no fallback, and sketchbook's values live on :root — without this block every
+   other theme would inherit warm dark ink (unreadable on dark/blueprint).
+   Each token aliases the theme's own --anatomy-* value, so fills stay legible
+   everywhere. Fills/colours only — never geometry. */
+[data-theme="light"],
+[data-theme="paper"],
+[data-theme="sepia"],
+[data-theme="blueprint"],
+[data-theme="dark"] {
+  --ink: var(--anatomy-face);
+  --lead: var(--anatomy-muted);
+  --wax: var(--anatomy-lit);
+  --red: var(--anatomy-red);
+  --gold: var(--anatomy-lit-shade);
+  --paper: var(--panel-bg);
+  --paper-lit: var(--anatomy-top);
+  --marker-paper: var(--anatomy-card);
+  --marker-gold: var(--bs-hashMerkle);
+  --marker-teal: var(--anatomy-green);
+  --tray: var(--anatomy-faint);
+  --steel: var(--anatomy-blue);
+  --steel-dark: var(--anatomy-blue);
+  --brass: var(--anatomy-lit-shade);
+  --teal: var(--anatomy-green);
+  --plum: var(--anatomy-purple);
+  --desk: var(--page-bg);
+  --blue: var(--anatomy-blue);
+  --rose: var(--anatomy-red);
+}
+
+/* Dark sketchbook support: the default theme follows the system when unset */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    background: #0a0b0d;
+  }
+}

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sketchbook">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#e3dac8" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Interactive anatomy of a Kaspa block: live mainnet data, to-scale wire bytes, DAG walks and transaction dissection. Search any block or transaction." />
+  <title>Anatomy of a Kaspa block</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Courier+Prime:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500&family=Young+Serif&family=Gaegu:wght@400;700&display=swap" rel="stylesheet" />
+  <script>
+  /* theme boot: sketchbook default, stored choice wins, honour dark mode (A's boot script) */
+  (function () {
+    try {
+      var t = localStorage.getItem('kba-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'sketchbook');
+      document.documentElement.setAttribute('data-theme', t);
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute('content', ({ sketchbook: '#e3dac8', light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' })[t] || '#e3dac8');
+    } catch (e) {}
+  })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <noscript><div class="panel-box mono noscript-box">This figure needs JavaScript.</div></noscript>
+  <main class="container-main">
+    <!-- HEADER -->
+    <header class="header-bar">
+      <h1 class="serif-title main-heading">Anatomy of a Kaspa block</h1>
+      <div class="header-tools">
+        <div class="status-group" role="group" aria-label="Status and options">
+          <button type="button" id="live-chip" class="ctrl-btn mono" title="Live data from the Kaspa REST API. Tap to resync.">connecting…</button>
+          <button type="button" id="btn-nerd" class="ctrl-btn mono" title="Formulas, spec table and sliders [N]">nerd mode</button>
+          <button type="button" id="btn-sfx" class="ctrl-btn mono" title="Sound effects">sfx</button>
+        </div>
+        <div class="theme-group" role="group" aria-label="Color theme">
+          <button type="button" data-set-theme="sketchbook" class="ctrl-btn active mono">sketchbook</button>
+          <button type="button" data-set-theme="light" class="ctrl-btn mono">light</button>
+          <button type="button" data-set-theme="paper" class="ctrl-btn mono">paper</button>
+          <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
+          <button type="button" data-set-theme="blueprint" class="ctrl-btn mono">blueprint</button>
+          <button type="button" data-set-theme="dark" class="ctrl-btn mono">dark</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- SEARCH -->
+    <form id="search-form" class="search-bar" role="search" autocomplete="off">
+      <input id="blk-in" class="mono" type="search" enterkeyhint="search" inputmode="search" placeholder="Block hash or transaction ID" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="Search block hash or transaction ID">
+      <button type="submit" id="blk-go" class="ctrl-btn mono">Search</button>
+    </form>
+    <div id="blk-msg" class="search-msg mono" aria-live="polite"></div>
+
+    <!-- MAIN ANATOMY PLATE CARD -->
+    <section
+      id="anatomy-plate"
+      class="iso-card"
+      tabindex="0"
+      aria-label="Interactive isometric figure of a post-Toccata Kaspa BlockDAG Block. Tap any assembly or use Left and Right arrow keys to inspect stations 01 to 06, E to peel the block apart, M or Space to stamp a block, and S to slow time."
+    >
+      <div class="corner-bar-top mono">
+        <div class="cb-left">
+          <span class="cb-fig">Fig 01</span>
+          <span class="cb-title">One Kaspa block</span>
+        </div>
+        <div id="corner-top-right" class="cb-right">
+          
+        </div>
+      </div>
+
+      <nav id="callout-row" class="callout-row" aria-label="The five trays: header, roots, body, one transaction, floor"></nav>
+
+      <div class="stage-frame">
+        <div class="hud tl">
+          <button type="button" id="z-back" class="ctrl-btn mono" hidden title="Go back one block or close the transaction view [Esc]">&lsaquo; back</button>
+          <button type="button" id="z-tip" class="ctrl-btn mono" hidden title="Unpin this block and follow the live tip again">tip</button>
+          <button type="button" id="z-dna" class="ctrl-btn mono" title="Scroll to Byte Anatomy &amp; Block DNA [D]">Bytes / DNA</button>
+        </div>
+      <div class="stage-wrap">
+        <canvas id="shader-canvas" class="shader-layer" width="360" height="270"></canvas>
+        <canvas id="mote-cv"></canvas>
+        <div class="scan"></div>
+        <svg id="iso-stage" class="iso-svg" viewBox="100 -30 800 600" role="group" aria-labelledby="svg-title">
+          <title id="svg-title">Isometric sketchbook anatomy of a post-Toccata Kaspa BlockDAG Block (Block v2 · Tx v1) — tap a neighbouring block to walk the DAG, or open a transaction into its own anatomy</title>
+          <defs id="kg-defs">
+            <linearGradient id="kg-top" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--anatomy-top)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-top) 68%,var(--anatomy-shade-1))"/></linearGradient>
+            <linearGradient id="kg-s0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-shade-0) 88%,var(--anatomy-top))"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-shade-0) 78%,#000)"/></linearGradient>
+            <linearGradient id="kg-s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-shade-1) 88%,var(--anatomy-top))"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-shade-1) 80%,#000)"/></linearGradient>
+            <linearGradient id="kg-s2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-shade-2) 88%,var(--anatomy-top))"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-shade-2) 87%,#000)"/></linearGradient>
+            <linearGradient id="kg-s3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--anatomy-shade-3)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-shade-3) 90%,#000)"/></linearGradient>
+            <linearGradient id="kg-lit-top" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-lit-top) 90%,#fff)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-lit-top) 78%,var(--anatomy-lit))"/></linearGradient>
+            <linearGradient id="kg-lit-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--anatomy-lit-shade)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-lit-shade) 78%,var(--anatomy-lit))"/></linearGradient>
+            <linearGradient id="kg-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-blue) 76%,#fff)"/><stop offset="1" style="stop-color:var(--anatomy-blue)"/></linearGradient>
+            <linearGradient id="kg-red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-red) 76%,#fff)"/><stop offset="1" style="stop-color:var(--anatomy-red)"/></linearGradient>
+            <!-- sketchbook hatching (used by themes.css) -->
+            <pattern id="sk-hatch-0" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+              <rect width="7" height="7" style="fill:var(--anatomy-shade-0)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".65"/>
+            </pattern>
+            <pattern id="sk-hatch-1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+              <rect width="7" height="7" style="fill:var(--anatomy-shade-1)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".65"/>
+            </pattern>
+            <pattern id="sk-hatch-2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+              <rect width="7" height="7" style="fill:var(--anatomy-shade-2)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".55"/>
+            </pattern>
+            <pattern id="sk-hatch-3" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+              <rect width="7" height="7" style="fill:var(--anatomy-shade-3)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".5"/>
+            </pattern>
+          </defs>
+          <g id="layer-neighbors" aria-label="Neighbour blocks around the main block: parents, children and mergeset blues and reds."></g>
+          <g id="layer-solids" role="img" aria-labelledby="svg-title"></g>
+          <g id="layer-wires" aria-hidden="true"></g>
+          <g id="layer-fast-kinematics" pointer-events="none" aria-hidden="true">
+            <path id="fast-dial-needle" class="iso-stroke-lit" style="stroke-width: 1.5px;" d=""/>
+            <circle id="fast-dial-hub" class="iso-dot-lit" cx="0" cy="0" r="2.2"/>
+            <path id="fast-turret-sweep" class="iso-stroke-lit" style="stroke-width: 1.35px;" d=""/>
+            <circle id="fast-turret-hub" class="iso-dot-lit" cx="0" cy="0" r="2"/>
+            <path id="fast-flywheel-spokes" class="iso-stroke-mid" d=""/>
+          </g>
+          <g id="layer-tx" aria-label="Transaction anatomy scene: inputs, body and outputs"></g>
+          <g id="layer-sketch" class="sketch-layer" aria-label="Numbered tray callouts with leader lines"></g>
+        </svg>
+        <div id="more-ov" hidden role="dialog" aria-label="List of additional items">
+          <div class="ov-head">
+            <span id="more-title" class="mono" style="font-size: 11px; font-weight: 600; color: var(--anatomy-strong);"></span>
+            <button type="button" id="more-close" class="ctrl-btn mono">close</button>
+          </div>
+          <div id="more-list" class="mono"></div>
+        </div>
+      </div>
+        <div class="hud">
+          <button type="button" id="z-tx" class="ctrl-btn mono" hidden title="Open the transaction carriage as its own anatomy">Open tx</button>
+          <button type="button" id="z-tilt" class="ctrl-btn mono" title="Change viewing angle">&#8635;</button>
+          <button type="button" id="z-out" class="ctrl-btn mono" title="Zoom out [-]">&minus;</button>
+          <span id="zoom-lbl" class="mono">1.0&times;</span>
+          <button type="button" id="z-in" class="ctrl-btn mono" title="Zoom in [+]">+</button>
+          <button type="button" id="z-home" class="ctrl-btn mono" title="Reset view [0]">&#8962;</button>
+        </div>
+      </div>
+
+      <div class="byte-strip-wrap" role="group" aria-label="The serialized header to scale: tap a field to inspect it">
+        <svg id="byte-strip-svg" class="byte-strip-svg" viewBox="0 0 640 104" role="img" aria-label="Serialized header byte strip, to scale"></svg>
+      </div>
+
+      <div class="corner-bar-bottom mono">
+        <div style="color: var(--anatomy-muted);">
+          <span class="mobile-only">Pinch to zoom · drag to orbit · tap a part</span>
+          <span class="desktop-only"><kbd>←</kbd> <kbd>→</kbd> station · drag to orbit · <kbd>E</kbd> peel · <kbd>M</kbd> stamp · <kbd>S</kbd> slow · <kbd>+</kbd> <kbd>&minus;</kbd> <kbd>0</kbd> zoom · <kbd>D</kbd> bytes · <kbd>Esc</kbd> back</span>
+        </div>
+        <div id="live-readout" class="truncate-line" style="font-weight: 500; color: var(--anatomy-strong);">
+          
+        </div>
+      </div>
+
+      <div id="guided-bar" class="guided-bar" aria-label="Guided flow through the block">
+        <div class="gf-actions">
+          <button type="button" id="gf-play" class="ctrl-btn mono gf-primary" title="Peel the block in order and seat it again">&#9654; Play all</button>
+          <button type="button" id="gf-next" class="ctrl-btn mono gf-next" title="The next canonical step">Next step &rarr;</button>
+          <span id="gf-pow" class="gf-pow mono" title="kHeavyHash vs the target in bits">hash &gt; target</span>
+          <button type="button" id="gf-logic" class="ctrl-btn mono" title="The four verified rules and the statechart">The logic</button>
+        </div>
+        <div class="gf-pick-row">
+          <span id="gf-pick" class="gf-pick mono" hidden>Pick one</span>
+          <div id="gf-pills" class="gf-pills"></div>
+        </div>
+        <p id="gf-caption" class="gf-caption hand" aria-live="polite">A sealed Kaspa block, one of ten a second.</p>
+      </div>
+    </section>
+
+    <!-- DOCK TOOLBAR -->
+    <div class="dock" role="toolbar" aria-label="Figure controls">
+      <button type="button" id="btn-prev" class="ctrl-btn mono">‹ Prev</button>
+      <button type="button" id="btn-next" class="ctrl-btn mono">Next ›</button>
+      <button type="button" id="btn-explode" class="ctrl-btn mono"><span class="desktop-only">[E] </span>Peel apart</button>
+      <button type="button" id="btn-mine" class="ctrl-btn mono"><span class="desktop-only">[M] </span>Stamp a block</button>
+      <button type="button" id="btn-slow" class="ctrl-btn mono nerd-only"><span class="desktop-only">[S] </span>Slow: 1×</button>
+      <button type="button" id="btn-tour" class="ctrl-btn mono nerd-only">Guided flow: OFF</button>
+      <button type="button" id="btn-era" class="ctrl-btn mono" title="Flip between the pre- and post-Toccata block model"><span class="desktop-only">[T] </span>Era: v2 Toccata</button>
+      <button type="button" id="btn-share" class="ctrl-btn mono" title="Save or share a PNG of this block"><span class="desktop-only">[P] </span>Share card</button>
+    </div>
+
+    <!-- STATION SELECTOR STRIP (00 to 06) -->
+    <section aria-label="Block Anatomy Assemblies">
+      <div class="station-strip" id="station-grid" data-strip role="group" aria-label="Assembly stations 00 to 06">
+        <button type="button" data-station="0" class="station-pill active">
+          <span class="station-pill-code mono">00 · ALL</span>
+          <span class="station-pill-name">Full Block Bench</span>
+          <span id="pill-sub-0" class="station-pill-sub mono">6 assemblies</span>
+        </button>
+        <button type="button" data-station="1" class="station-pill">
+          <span class="station-pill-code mono">01 · DAG INTAKE</span>
+          <span class="station-pill-name">Parent Manifold</span>
+          <span class="station-pill-sub mono"><code>parents_by_level</code> + PP</span>
+        </button>
+        <button type="button" data-station="2" class="station-pill">
+          <span class="station-pill-code mono">02 · BODY V1</span>
+          <span class="station-pill-name">Tx V1 &amp; Covenants</span>
+          <span class="station-pill-sub mono"><code>CovenantBinding</code> · ZK</span>
+        </button>
+        <button type="button" data-station="3" class="station-pill">
+          <span class="station-pill-code mono">03 · MASS GAUGE</span>
+          <span class="station-pill-name">Three-Budget Gauge</span>
+          <span class="station-pill-sub mono">Compute · Transient · Storage</span>
+        </button>
+        <button type="button" data-station="4" class="station-pill">
+          <span class="station-pill-code mono">04 · KIP-21 SMT</span>
+          <span class="station-pill-name">SeqCommit Turret</span>
+          <span class="station-pill-sub mono"><code>accepted_id_merkle_root</code></span>
+        </button>
+        <button type="button" data-station="5" class="station-pill">
+          <span class="station-pill-code mono">05 · STATE ROOTS</span>
+          <span class="station-pill-name">Merkle &amp; UTXO Cylinders</span>
+          <span class="station-pill-sub mono"><code>txid merkle</code> &amp; <code>utxo_commitment</code></span>
+        </button>
+        <button type="button" data-station="6" class="station-pill">
+          <span class="station-pill-code mono">06 · HEADER V2</span>
+          <span class="station-pill-name">kHeavyHash Crown</span>
+          <span class="station-pill-sub mono"><code>TOCCATA_BLOCK_VERSION = 2</code> · PoW</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- SERIALIZED BYTE ANATOMY + INTERACTIVE ISOMETRIC FIELD CAD + HELIX STRAND -->
+    <section class="panel-box" id="dna-panel" aria-label="Serialized Byte Anatomy and Block DNA inspector">
+      <div class="panel-header">
+        <span class="mono ttl">Byte anatomy</span>
+        <div class="dna-actions">
+          <span id="byte-src" class="mono dim">sample</span>
+          <button type="button" id="btn-mode-bytes" class="ctrl-btn active mono">Wire bytes + CAD</button>
+          <button type="button" id="btn-mode-helix" class="ctrl-btn mono">Helix strand</button>
+        </div>
+      </div>
+
+      <div id="view-bytes" class="byte-grid">
+        <div>
+          <div class="byte-bar" id="byte-bar" role="listbox" aria-label="Header fields to scale by byte width"></div>
+          <div class="byte-ruler mono"><span>wire offset 0 B</span><span id="byte-total">—</span></div>
+          <div class="field-list mono" id="field-list"></div>
+        </div>
+        <div class="field-detail" id="field-detail">
+          <div class="fd-top">
+            <div>
+              <h4 class="mono" id="fd-title">header.version</h4>
+              <div class="sub mono" id="fd-sub">u16 · 2 bytes · offset 0..2</div>
+            </div>
+            <button type="button" id="fd-jump-btn" class="ctrl-btn mono" style="min-height:26px;padding:3px 8px;font-size:10.5px;">Station 06 →</button>
+          </div>
+          <div class="field-iso-box" title="Drag horizontally to orbit this field's isometric CAD mechanism">
+            <svg id="field-iso-svg" viewBox="0 0 320 142" role="img" aria-label="Interactive isometric CAD diagram of the selected block header field"></svg>
+            <span class="field-iso-az mono" id="field-iso-az">46°</span>
+          </div>
+          <div class="field-iso-cap mono">drag to orbit</div>
+          <div class="hex-grid mono" id="hex-grid"></div>
+          <div class="field-note" id="field-note">Tap a field or byte to inspect it.</div>
+        </div>
+      </div>
+
+      <div id="view-helix" hidden>
+        <div id="dna-chips" class="dna-chips" data-strip tabindex="0" role="group" aria-label="Block DNA fields"></div>
+        <canvas id="dna-cv" aria-label="Double helix of the selected block field, one base per two bits"></canvas>
+        <div id="dna-comp" class="dna-comp"></div>
+        <div id="dna-info" class="mono"></div>
+      </div>
+    </section>
+
+    <!-- LIVE BLOCK & ISOMETRIC 3D-PROJECTED MERGESET NEIGHBOURHOOD -->
+    <section class="live-grid" aria-label="Live block from the Kaspa REST API">
+      <div class="panel-box">
+        <div class="panel-header">
+          <span class="mono" style="font-size: 11.5px; font-weight: 600; color: var(--anatomy-strong);">Mergeset</span>
+          <span id="lv-src" class="mono" style="font-size: 11px; color: var(--anatomy-muted);">sample</span>
+        </div>
+        <svg id="live-map" class="live-map" viewBox="0 0 320 172" role="img" aria-label="Isometric parent blocks on the left, the active block in the centre, child blocks on the right, and mergeset blue/red tiles below"></svg>
+        <div id="net-strip" class="net-strip mono"></div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-header">
+          <span class="mono" style="font-size: 11.5px; font-weight: 600; color: var(--anatomy-strong);">Block header</span>
+          
+        </div>
+        <div id="live-rows" class="mono"></div>
+      </div>
+    </section>
+
+    <!-- BLOCK STREAM & TRANSACTION DISSECTOR -->
+    <section class="v4-grid" aria-label="Block stream and transactions">
+      <div class="panel-box">
+        <div class="panel-header"><span class="mono ttl">Block stream</span><span id="tk-meta" class="mono dim"></span></div>
+        <div id="tk-cells" class="tk-cells"></div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-header"><span class="mono ttl">Transactions</span><span id="tx-meta" class="mono dim"></span></div>
+        <div id="tx-list" class="mono"></div>
+      </div>
+    </section>
+
+    <!-- TECHNICAL INSPECTOR & SPECIFICATION TABLE -->
+    <section class="inspector-grid">
+      <div class="panel-box">
+        <div class="insp-head">
+          <div>
+            <span id="insp-code" class="mono" style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: var(--anatomy-lit);">STATION 00 · COMPLETE INSTRUMENT</span>
+            <h2 id="insp-title" class="serif-title" style="font-size: 20px; font-weight: 400; margin-top: 2px; color: var(--anatomy-strong);">
+              Post-Toccata Kaspa BlockDAG Block (Block Version 2 · Tx Version 1)
+            </h2>
+          </div>
+          <span id="insp-parts" class="insp-badge mono">solids in view</span>
+        </div>
+
+        <p id="insp-desc" class="insp-body">
+          Activated on June 30, 2026 at DAA score 474,165,565, the Toccata hard fork (Covenants++) sets the block header version to <strong>TOCCATA_BLOCK_VERSION = 2</strong> (pre-Toccata: 1) and transaction version to <strong>TX_VERSION_TOCCATA = 1</strong> (pre-Toccata: 0), while doubling the transient-mass limit to <strong>1,000,000 grams</strong>.
+        </p>
+
+        <div id="insp-live" class="mono" aria-live="polite"></div>
+
+        <div id="insp-formula-box" class="formula-box mono nerd-only">
+          <div style="color: var(--anatomy-muted);">// Consensus Recurrence &amp; Mass Ceiling (KIP-16, KIP-17, KIP-20, KIP-21)</div>
+          <div id="insp-formula-1" style="color: var(--anatomy-strong); margin-top: 3px;">B.header.accepted_id_merkle_root = SeqCommit(B) = H_seq(SeqCommit(parent(B)), SeqStateRoot(B))</div>
+          <div id="insp-formula-2" style="color: var(--anatomy-text); margin-top: 3px;">Compute ≤ 500,000g · Transient (4×bytes) ≤ 1,000,000g · Storage ≤ 500,000g — three independent per-block budgets</div>
+          <div id="insp-formula-3" style="color: var(--anatomy-muted); margin-top: 3px;">RelayFeeFloor(tx) ≈ 100 sompi/g × tx mass // rate = node policy (raised 1 → 100 sompi/g at Toccata)</div>
+        </div>
+      </div>
+
+      <div class="panel-box nerd-only">
+        <div class="insp-head" style="align-items: center;">
+          <span class="mono" style="font-size: 11.5px; text-transform: uppercase; font-weight: 600; color: var(--anatomy-strong);">BlockHeader v2 &amp; Transaction v1 Wire Anatomy</span>
+          <span class="mono" style="font-size: 11px; color: var(--anatomy-muted);">Tap row to inspect</span>
+        </div>
+
+        <div class="table-scroll">
+          <table class="spec-table mono">
+            <thead>
+              <tr>
+                <th>Field / Substructure</th>
+                <th>Type / Size</th>
+                <th>Post-Toccata Consensus Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-jump-station="6">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.version</td>
+                <td style="color: var(--anatomy-lit);">u16 = 2</td>
+                <td style="color: var(--anatomy-muted);">Post-Toccata <code>TOCCATA_BLOCK_VERSION = 2</code> (pre-Toccata: 1) — flags KIP-21 sequencing commit</td>
+              </tr>
+              <tr data-jump-station="1">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.parents_by_level</td>
+                <td>CompressedParents</td>
+                <td style="color: var(--anatomy-muted);">Multi-level DAG tips under GHOSTDAG k = 124 (≤ 16 direct; cumulative ≤ <code>255 × 2048</code> uncompressed)</td>
+              </tr>
+              <tr data-jump-station="1">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.pruning_point</td>
+                <td>Hash (32B)</td>
+                <td style="color: var(--anatomy-muted);">IBD bootstrap anchor · 1,080,000 blue-score depth (~30 h at 10 BPS)</td>
+              </tr>
+              <tr data-jump-station="5">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.hash_merkle_root</td>
+                <td>Hash (32B)</td>
+                <td style="color: var(--anatomy-muted);">Merkle root over the block’s transaction IDs (<code>txid</code> omits <code>signature_script</code>)</td>
+              </tr>
+              <tr data-jump-station="4">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.accepted_id_merkle_root</td>
+                <td style="color: var(--anatomy-lit);">SeqCommit(B) (32B)</td>
+                <td style="color: var(--anatomy-muted);">KIP-21 <code>H_seq(SeqCommit(parent), SeqStateRoot)</code> via 256-bit ActiveLanes SMT</td>
+              </tr>
+              <tr data-jump-station="5">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.utxo_commitment</td>
+                <td>Hash (32B)</td>
+                <td style="color: var(--anatomy-muted);">Rolling MuHash of the UTXO set (entries carry <code>covenant_id</code>)</td>
+              </tr>
+              <tr data-jump-station="6">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.{timestamp,bits,nonce}</td>
+                <td>u64, u32, u64</td>
+                <td style="color: var(--anatomy-muted);">ms clock, target difficulty, kHeavyHash matrix PoW nonce</td>
+              </tr>
+              <tr data-jump-station="6">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">header.{daa_score,blue_score,blue_work}</td>
+                <td>u64, u64, Uint192</td>
+                <td style="color: var(--anatomy-muted);">Committed in <code>MergesetContextHash(B)</code> &amp; <code>miner_payload_leaf(X)</code></td>
+              </tr>
+              <tr data-jump-station="2">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">tx_v1.inputs[].compute_budget</td>
+                <td style="color: var(--anatomy-lit);">u16 · script units</td>
+                <td style="color: var(--anatomy-muted);">Replaces v0 <code>sig_op_count</code> in the same <code>TxInputMass</code> slot; allowance <code>q × 10,000 + 9,999</code> SU</td>
+              </tr>
+              <tr data-jump-station="2">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">tx_v1.outputs[].covenant</td>
+                <td style="color: var(--anatomy-lit);">Option&lt;Binding&gt;</td>
+                <td style="color: var(--anatomy-muted);">KIP-20 <code>{ authorizing_input: u16, covenant_id: Hash(32B) }</code> lineage lock</td>
+              </tr>
+              <tr data-jump-station="4">
+                <td style="font-weight: 600; color: var(--anatomy-strong);">tx_v1.{subnetwork_id, gas, payload}</td>
+                <td>20B, u64, Vec&lt;u8&gt;</td>
+                <td style="color: var(--anatomy-muted);">System lanes <code>0x00‖0…</code> native &amp; <code>0x01‖0…</code> coinbase (tx.gas = 0) · user lane <code>[ns:4B, 0x00*16]</code> · ≤ 50 lanes/blk</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKLOAD MODEL -->
+    <section class="controls-grid">
+      <div class="panel-box">
+        <div class="panel-header">
+          <span class="mono ttl">Workload model</span>
+          <span id="fee-floor-badge" class="mono dim">Fee floor Σ (100 sompi/g)</span>
+        </div>
+
+        <div class="sliders-3col">
+          <label class="slider-label mono">
+            <div class="slider-top">
+              <span>Txs in block</span>
+              <span id="lbl-covenants" style="color: var(--anatomy-text);">38 txs</span>
+            </div>
+            <input type="range" id="rng-covenants" min="1" max="120" value="38" />
+            <div class="slider-sub">Tx v1: <code>CovenantBinding</code> (KIP-20) + <code>compute_budget</code></div>
+          </label>
+
+          <label class="slider-label mono">
+            <div class="slider-top">
+              <span>KIP-21 User Lanes</span>
+              <span id="lbl-lanes" style="color: var(--anatomy-text);">14 / 50</span>
+            </div>
+            <input type="range" id="rng-lanes" min="1" max="50" value="14" />
+            <div class="slider-sub"><code>[ns:4B, 0x00*16]</code> · max 1B gas/lane</div>
+          </label>
+
+          <label class="slider-label mono">
+            <div class="slider-top">
+              <span>ZK Precompiles (KIP-16)</span>
+              <span id="lbl-zk" style="color: var(--anatomy-text);">2 proofs</span>
+            </div>
+            <input type="range" id="rng-zk" min="0" max="8" value="2" />
+            <div class="slider-sub">Groth16 (<code>0x20</code>) &amp; RISC0-Succinct (<code>0x21</code>)</div>
+          </label>
+        </div>
+
+        <div class="metrics-3col mono">
+          <div class="metric-card">
+            <div style="color: var(--anatomy-muted);">Compute (≤ 500k)</div>
+            <div id="metric-compute" class="metric-val">412,000 g</div>
+            <div id="metric-su" class="metric-sub">script units</div>
+            <div class="meter"><i id="bar-c"></i></div>
+          </div>
+          <div class="metric-card">
+            <div style="color: var(--anatomy-muted);">Transient (≤ 1M)</div>
+            <div id="metric-transient" class="metric-val">642,800 g</div>
+            <div id="metric-bytes" class="metric-sub">KB / 250 KB cap</div>
+            <div class="meter"><i id="bar-t"></i></div>
+          </div>
+          <div class="metric-card">
+            <div style="color: var(--anatomy-muted);">Storage (≤ 500k)</div>
+            <div id="metric-storage" class="metric-val">298,400 g</div>
+            <div id="metric-fee" class="metric-sub">floor</div>
+            <div class="meter"><i id="bar-s"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="page-foot hand">
+      Sources: rusty-kaspa, Toccata guide (KIP-16/17/20/21). Hand-drawn pen based on <a href="https://github.com/kevintngo/statechart-art" rel="noopener" target="_blank">statechart-art</a> by Kevin T. Ngo.
+    </footer>
+  </main>
+</body>
+</html>
