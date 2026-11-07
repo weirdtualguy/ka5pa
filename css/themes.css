@@ -1,6 +1,4 @@
-/* css/themes.css — per-theme overrides. The five A themes keep their polished CAD
-   look; sketchbook re-skins fills and strokes only (never geometry): ink outlines,
-   flat marker fills with light hatching, paper grain, hand lettering. */
+/* css/themes.css — shared page, figure and control styling for every theme. */
 
 /* ---------- shared: page key-light + drafting dots (A's v10.1) ---------- */
 body {
@@ -40,165 +38,40 @@ body::before {
   mask-image: radial-gradient(ellipse 50% 40% at 50% 64%, #000 10%, transparent 100%);
 }
 
-/* non-sketchbook themes (light, paper, sepia, blueprint, dark) keep A's
-   gradient faces and tactile controls */
-html:not([data-theme="sketchbook"]) .iso-top,
-html:not([data-theme="sketchbook"]) .nb-top { fill: url(#kg-top) var(--anatomy-top); }
-html:not([data-theme="sketchbook"]) .iso-s0 { fill: url(#kg-s0) var(--anatomy-shade-0); }
-html:not([data-theme="sketchbook"]) .iso-s1,
-html:not([data-theme="sketchbook"]) .nb-side { fill: url(#kg-s1) var(--anatomy-shade-1); }
-html:not([data-theme="sketchbook"]) .iso-s2 { fill: url(#kg-s2) var(--anatomy-shade-2); }
-html:not([data-theme="sketchbook"]) .iso-s3 { fill: url(#kg-s3) var(--anatomy-shade-3); }
-html:not([data-theme="sketchbook"]) .iso-lit-top,
-html:not([data-theme="sketchbook"]) .nb-sel .nb-top,
-html:not([data-theme="sketchbook"]) .txm.sel .nb-top { fill: url(#kg-lit-top) var(--anatomy-lit-top); }
-html:not([data-theme="sketchbook"]) .iso-lit-side { fill: url(#kg-lit-side) var(--anatomy-lit-shade); }
-html:not([data-theme="sketchbook"]) .nb-blue { fill: url(#kg-blue) var(--anatomy-blue); }
-html:not([data-theme="sketchbook"]) .nb-red { fill: url(#kg-red) var(--anatomy-red); }
+/* gradient faces and tactile controls */
+html:root .iso-top,
+html:root .nb-top { fill: url(#kg-top) var(--anatomy-top); }
+html:root .iso-s0 { fill: url(#kg-s0) var(--anatomy-shade-0); }
+html:root .iso-s1,
+html:root .nb-side { fill: url(#kg-s1) var(--anatomy-shade-1); }
+html:root .iso-s2 { fill: url(#kg-s2) var(--anatomy-shade-2); }
+html:root .iso-s3 { fill: url(#kg-s3) var(--anatomy-shade-3); }
+html:root .iso-lit-top,
+html:root .nb-sel .nb-top,
+html:root .txm.sel .nb-top { fill: url(#kg-lit-top) var(--anatomy-lit-top); }
+html:root .iso-lit-side { fill: url(#kg-lit-side) var(--anatomy-lit-shade); }
+html:root .nb-blue { fill: url(#kg-blue) var(--anatomy-blue); }
+html:root .nb-red { fill: url(#kg-red) var(--anatomy-red); }
 
-html:not([data-theme="sketchbook"]) .ctrl-btn,
-html:not([data-theme="sketchbook"]) .tk,
-html:not([data-theme="sketchbook"]) .hex-cell {
+html:root .ctrl-btn,
+html:root .tk,
+html:root .hex-cell {
   background: linear-gradient(180deg, color-mix(in srgb, var(--panel-bg) 84%, var(--anatomy-top)), color-mix(in srgb, var(--panel-bg) 92%, var(--anatomy-shade-1)));
   box-shadow: inset 0 1px 0 var(--hl), 0 1px 1.5px var(--drop-2);
 }
-html:not([data-theme="sketchbook"]) .ctrl-btn.active {
+html:root .ctrl-btn.active {
   background: linear-gradient(180deg, color-mix(in srgb, var(--anatomy-lit) 14%, var(--panel-bg)), color-mix(in srgb, var(--anatomy-lit) 6%, var(--panel-bg)));
   box-shadow: inset 0 1px 0 var(--hl), 0 0 0 3px color-mix(in srgb, var(--anatomy-lit) 14%, transparent);
 }
-html:not([data-theme="sketchbook"]) .station-pill {
+html:root .station-pill {
   background: linear-gradient(180deg, color-mix(in srgb, var(--panel-bg) 84%, var(--anatomy-top)), var(--panel-bg));
   box-shadow: inset 0 1px 0 var(--hl), 0 1px 1.5px var(--drop-2);
 }
-html:not([data-theme="sketchbook"]) .station-pill.active {
+html:root .station-pill.active {
   background: linear-gradient(180deg, color-mix(in srgb, var(--anatomy-lit) 9%, var(--anatomy-card)), var(--anatomy-card) 70%);
   box-shadow: inset 3px 0 0 var(--anatomy-lit), inset 0 1px 0 var(--hl), 0 10px 22px -12px color-mix(in srgb, var(--anatomy-lit) 60%, transparent);
 }
-html:not([data-theme="sketchbook"]) .byte-bar { height: 32px; border-radius: 8px; box-shadow: inset 0 1px 3px var(--drop), 0 1px 0 var(--hl); }
-
-/* ==================================================================
-   SKETCHBOOK — B's look: warm paper, ink lines, marker fills, hatching
-   ================================================================== */
-[data-theme="sketchbook"] {
-  /* paper tooth on the page and the figure */
-}
-[data-theme="sketchbook"] body,
-html[data-theme="sketchbook"] body {
-  background-image:
-    radial-gradient(1000px 460px at 50% -120px, rgba(226, 179, 77, 0.07), transparent 72%),
-    url("../assets/paper-grain.svg");
-  background-size: auto, 180px 180px;
-}
-html[data-theme="sketchbook"] .iso-card,
-html[data-theme="sketchbook"] .panel-box,
-html[data-theme="sketchbook"] .field-detail {
-  background-color: var(--paper);
-  background-image: url("../assets/paper-grain.svg");
-  background-size: 180px 180px;
-  border-color: color-mix(in srgb, var(--ink) 24%, var(--panel-border));
-  box-shadow: 0 1px 0 #cdbfa8, 3px 4px 0 #d4c9b4;
-}
-html[data-theme="sketchbook"] .stage-wrap {
-  background:
-    radial-gradient(ellipse 46% 11% at 50% 69%, var(--floor), transparent 72%),
-    url("../assets/paper-grain.svg");
-  background-size: auto, 180px 180px;
-  background-color: var(--paper-lit);
-}
-html[data-theme="sketchbook"] .stage-wrap::before {
-  background-image:
-    repeating-linear-gradient(30deg, var(--grid) 0 1px, transparent 1px 44px),
-    repeating-linear-gradient(-30deg, var(--grid) 0 1px, transparent 1px 44px);
-}
-html[data-theme="sketchbook"] .stage-wrap::after { display: none; }
-
-/* flat marker faces with ink outlines + light hatching (geometry untouched) */
-html[data-theme="sketchbook"] .iso-top,
-html[data-theme="sketchbook"] .nb-top { fill: var(--anatomy-top); stroke: var(--ink); stroke-width: .7px; stroke-linejoin: round; }
-html[data-theme="sketchbook"] .iso-s0 { fill: url(#sk-hatch-0) var(--anatomy-shade-0); }
-html[data-theme="sketchbook"] .iso-s1,
-html[data-theme="sketchbook"] .nb-side { fill: url(#sk-hatch-1) var(--anatomy-shade-1); }
-html[data-theme="sketchbook"] .iso-s2 { fill: url(#sk-hatch-2) var(--anatomy-shade-2); }
-html[data-theme="sketchbook"] .iso-s3 { fill: url(#sk-hatch-3) var(--anatomy-shade-3); }
-html[data-theme="sketchbook"] .iso-paper { fill: var(--paper-lit); }
-html[data-theme="sketchbook"] .iso-lit-top,
-html[data-theme="sketchbook"] .nb-sel .nb-top,
-html[data-theme="sketchbook"] .txm.sel .nb-top { fill: var(--anatomy-lit-top); stroke: var(--ink); stroke-width: .75px; stroke-linejoin: round; }
-html[data-theme="sketchbook"] .iso-lit-side { fill: var(--anatomy-lit-shade); }
-html[data-theme="sketchbook"] .nb-blue { fill: var(--anatomy-blue); stroke: color-mix(in srgb, var(--ink) 45%, transparent); }
-html[data-theme="sketchbook"] .nb-red { fill: var(--anatomy-red); stroke: color-mix(in srgb, var(--ink) 45%, transparent); }
-html[data-theme="sketchbook"] .iso-stroke-hi,
-html[data-theme="sketchbook"] .iso-stroke-mid,
-html[data-theme="sketchbook"] .iso-stroke-lo { stroke: var(--ink); }
-html[data-theme="sketchbook"] .iso-stroke-faint { stroke: color-mix(in srgb, var(--ink) 42%, transparent); }
-html[data-theme="sketchbook"] .iso-pipe-paper { stroke: var(--paper-lit); }
-
-/* sketchbook controls: paper buttons with ink borders, no gradients */
-html[data-theme="sketchbook"] .ctrl-btn,
-html[data-theme="sketchbook"] .tk,
-html[data-theme="sketchbook"] .hex-cell {
-  background: var(--paper);
-  box-shadow: none;
-  border-color: color-mix(in srgb, var(--ink) 34%, var(--panel-border));
-}
-html[data-theme="sketchbook"] .ctrl-btn:hover { border-color: var(--ink); box-shadow: 1px 1px 0 #d4c9b4; }
-html[data-theme="sketchbook"] .ctrl-btn.active {
-  background: color-mix(in srgb, var(--anatomy-lit) 10%, var(--paper));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--anatomy-lit) 45%, transparent);
-}
-html[data-theme="sketchbook"] .station-pill {
-  background: var(--paper);
-  border-color: color-mix(in srgb, var(--ink) 30%, var(--panel-border));
-  box-shadow: none;
-}
-html[data-theme="sketchbook"] .station-pill.active {
-  background: color-mix(in srgb, var(--gold) 14%, var(--paper));
-  box-shadow: inset 3px 0 0 var(--anatomy-lit);
-}
-html[data-theme="sketchbook"] .callout-pill { background: var(--paper); }
-html[data-theme="sketchbook"] .callout-pill.on { box-shadow: inset 2px 0 0 var(--anatomy-lit), 1px 1px 0 #d4c9b4; }
-html[data-theme="sketchbook"] .gf-pill { border-color: color-mix(in srgb, var(--anatomy-lit) 40%, var(--panel-border)); color: var(--anatomy-lit); }
-html[data-theme="sketchbook"] .gf-primary { background: var(--anatomy-lit); border-color: var(--anatomy-lit); color: #fffdf6; }
-html[data-theme="sketchbook"] .meter { background: color-mix(in srgb, var(--ink) 12%, var(--paper)); }
-html[data-theme="sketchbook"] .metric-card { border-color: color-mix(in srgb, var(--ink) 22%, var(--panel-border)); }
-html[data-theme="sketchbook"] .byte-bar { border-radius: 6px; box-shadow: 1px 2px 0 #d4c9b4; }
-
-/* sketchbook typography:
-   titles Young Serif, labels Cutive Mono, UI DM Sans/Inter, hand notes Gaegu,
-   hex and numeric readouts JetBrains Mono */
-html[data-theme="sketchbook"] body { font-family: var(--font-ui); }
-html[data-theme="sketchbook"] .serif-title { font-family: var(--font-title); }
-html[data-theme="sketchbook"] .mono { font-family: var(--font-label); }
-html[data-theme="sketchbook"] .hand { font-family: var(--font-hand); }
-html[data-theme="sketchbook"] #live-readout,
-html[data-theme="sketchbook"] .lv-row b,
-html[data-theme="sketchbook"] .tx-row b,
-html[data-theme="sketchbook"] .metric-val,
-html[data-theme="sketchbook"] #zoom-lbl,
-html[data-theme="sketchbook"] .hex-cell,
-html[data-theme="sketchbook"] .fl-row .fo,
-html[data-theme="sketchbook"] .fl-row .fb,
-html[data-theme="sketchbook"] #dna-info,
-html[data-theme="sketchbook"] #insp-live,
-html[data-theme="sketchbook"] .gf-pow,
-html[data-theme="sketchbook"] .search-bar input { background: var(--paper); }
-html[data-theme="sketchbook"] kbd { font-family: var(--font-num); border-bottom-width: 2px; }
-html[data-theme="sketchbook"] code { font-family: var(--font-num); }
-
-/* sketchbook label halo: paper, not gloss */
-html[data-theme="sketchbook"] .nb-lbl, html[data-theme="sketchbook"] .nb-note,
-html[data-theme="sketchbook"] .tx-lbl, html[data-theme="sketchbook"] .tx-title,
-html[data-theme="sketchbook"] .tx-note, html[data-theme="sketchbook"] .nodeT,
-html[data-theme="sketchbook"] .nodeTb {
-  stroke: color-mix(in srgb, var(--paper-lit) 82%, transparent);
-}
-
-/* the ambient canvas layers read as chalk on paper */
-html[data-theme="sketchbook"] #shader-canvas { opacity: .85; }
-
-/* guided caption + logic modal get the hand lettering */
-html[data-theme="sketchbook"] .gf-caption { font-family: var(--font-hand); font-size: 15.5px; }
-html[data-theme="sketchbook"] .lg-rule b { font-family: var(--font-label); font-size: 15px; }
+html:root .byte-bar { height: 32px; border-radius: 8px; box-shadow: inset 0 1px 3px var(--drop), 0 1px 0 var(--hl); }
 
 /* ---------- reduced motion: no idle tour, no sfx motion, still readable ---------- */
 @media (prefers-reduced-motion: reduce) {

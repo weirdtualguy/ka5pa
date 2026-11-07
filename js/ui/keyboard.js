@@ -7,6 +7,7 @@ import { state } from '../engine/render.js';
 import { selectStation, toggleExplode, triggerBlockStamp, cycleSlowMotion, setEra, setNerd } from './controls.js';
 import { zoomAt, resetCam, camZ } from '../engine/camera.js';
 import { revealDnaPanel } from './a11y.js';
+import { isTxOpen, goBack, canGoBack } from './dag.js';
 import { emit } from '../util/events.js';
 
 export function initKeyboard() {
@@ -37,9 +38,17 @@ export function initKeyboard() {
       /* "The logic" open? Escape only closes the modal, leaving the stage alone. */
       const lg = document.getElementById('lg');
       if (lg && !lg.hidden) { lg.hidden = true; return; }
-      state.explode.want = 0;
-      document.getElementById('btn-explode').classList.remove('active');
-      selectStation(0, true);
+      /* unwind one level per press: transaction view → station/peel → previous block */
+      if (isTxOpen()) { goBack(); return; }
+      if (state.explode.want > 0 || state.station !== 0) {
+        state.explode.want = 0;
+        document.getElementById('btn-explode').classList.remove('active');
+        selectStation(0, true);
+      } else if (canGoBack()) goBack();
+    } else if (e.key === '/') {
+      e.preventDefault();
+      const inp = document.getElementById('blk-in');
+      inp.scrollIntoView({ block: 'center' }); inp.focus(); inp.select();
     } else if (e.key === '+' || e.key === '=') {
       e.preventDefault();
       zoomAt(camZ() * 1.25);

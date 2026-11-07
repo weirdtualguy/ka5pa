@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="sketchbook">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#e3dac8" />
+  <meta name="theme-color" content="#efede7" />
   <meta name="color-scheme" content="light dark" />
   <meta name="description" content="Interactive anatomy of a Kaspa block: live mainnet data, to-scale wire bytes, DAG walks and transaction dissection. Search any block or transaction." />
   <title>Anatomy of a Kaspa block</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Courier+Prime:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500&family=Young+Serif&family=Gaegu:wght@400;700&display=swap" rel="stylesheet" />
   <script>
-  /* theme boot: sketchbook default, stored choice wins, honour dark mode (A's boot script) */
+  /* theme boot: stored choice wins, else follow the system */
   (function () {
+    var colors = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
     try {
-      var t = localStorage.getItem('kba-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'sketchbook');
+      var t = localStorage.getItem('kba-theme');
+      if (!colors[t]) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', t);
       var m = document.querySelector('meta[name="theme-color"]');
-      if (m) m.setAttribute('content', ({ sketchbook: '#e3dac8', light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' })[t] || '#e3dac8');
+      if (m) m.setAttribute('content', colors[t]);
     } catch (e) {}
   })();
   </script>
@@ -41,7 +42,6 @@
           <button type="button" id="btn-sfx" class="ctrl-btn mono" title="Sound effects">sfx</button>
         </div>
         <div class="theme-group" role="group" aria-label="Color theme">
-          <button type="button" data-set-theme="sketchbook" class="ctrl-btn active mono">sketchbook</button>
           <button type="button" data-set-theme="light" class="ctrl-btn mono">light</button>
           <button type="button" data-set-theme="paper" class="ctrl-btn mono">paper</button>
           <button type="button" data-set-theme="sepia" class="ctrl-btn mono">sepia</button>
@@ -88,7 +88,7 @@
         <canvas id="mote-cv"></canvas>
         <div class="scan"></div>
         <svg id="iso-stage" class="iso-svg" viewBox="100 -30 800 600" role="group" aria-labelledby="svg-title">
-          <title id="svg-title">Isometric sketchbook anatomy of a post-Toccata Kaspa BlockDAG Block (Block v2 · Tx v1) — tap a neighbouring block to walk the DAG, or open a transaction into its own anatomy</title>
+          <title id="svg-title">Isometric anatomy of a post-Toccata Kaspa BlockDAG Block (Block v2 · Tx v1) — tap a neighbouring block to walk the DAG, or open a transaction into its own anatomy</title>
           <defs id="kg-defs">
             <linearGradient id="kg-top" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--anatomy-top)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-top) 68%,var(--anatomy-shade-1))"/></linearGradient>
             <linearGradient id="kg-s0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-shade-0) 88%,var(--anatomy-top))"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-shade-0) 78%,#000)"/></linearGradient>
@@ -99,19 +99,6 @@
             <linearGradient id="kg-lit-side" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--anatomy-lit-shade)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--anatomy-lit-shade) 78%,var(--anatomy-lit))"/></linearGradient>
             <linearGradient id="kg-blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-blue) 76%,#fff)"/><stop offset="1" style="stop-color:var(--anatomy-blue)"/></linearGradient>
             <linearGradient id="kg-red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--anatomy-red) 76%,#fff)"/><stop offset="1" style="stop-color:var(--anatomy-red)"/></linearGradient>
-            <!-- sketchbook hatching (used by themes.css) -->
-            <pattern id="sk-hatch-0" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-              <rect width="7" height="7" style="fill:var(--anatomy-shade-0)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".65"/>
-            </pattern>
-            <pattern id="sk-hatch-1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-              <rect width="7" height="7" style="fill:var(--anatomy-shade-1)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".65"/>
-            </pattern>
-            <pattern id="sk-hatch-2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-              <rect width="7" height="7" style="fill:var(--anatomy-shade-2)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".55"/>
-            </pattern>
-            <pattern id="sk-hatch-3" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-              <rect width="7" height="7" style="fill:var(--anatomy-shade-3)"/><path d="M0 0V7" style="stroke:var(--anatomy-hatch)" stroke-width=".5"/>
-            </pattern>
           </defs>
           <g id="layer-neighbors" aria-label="Neighbour blocks around the main block: parents, children and mergeset blues and reds."></g>
           <g id="layer-solids" role="img" aria-labelledby="svg-title"></g>
@@ -151,7 +138,7 @@
       <div class="corner-bar-bottom mono">
         <div style="color: var(--anatomy-muted);">
           <span class="mobile-only">Pinch to zoom · drag to orbit · tap a part</span>
-          <span class="desktop-only"><kbd>←</kbd> <kbd>→</kbd> station · drag to orbit · <kbd>E</kbd> peel · <kbd>M</kbd> stamp · <kbd>S</kbd> slow · <kbd>+</kbd> <kbd>&minus;</kbd> <kbd>0</kbd> zoom · <kbd>D</kbd> bytes · <kbd>Esc</kbd> back</span>
+          <span class="desktop-only"><kbd>←</kbd> <kbd>→</kbd> station · drag to orbit · <kbd>E</kbd> peel · <kbd>M</kbd> stamp · <kbd>S</kbd> slow · <kbd>+</kbd> <kbd>&minus;</kbd> <kbd>0</kbd> zoom · <kbd>D</kbd> bytes · <kbd>/</kbd> search · <kbd>Esc</kbd> back</span>
         </div>
         <div id="live-readout" class="truncate-line" style="font-weight: 500; color: var(--anatomy-strong);">
           

@@ -3,7 +3,7 @@ import { initRenderDom, initRenderSubscriptions, startMainLoop, startAmbientLoop
 import { initLiveData } from './data/api.js';
 import { initControls, setNerd, setEra, sfx } from './ui/controls.js';
 import { initKeyboard } from './ui/keyboard.js';
-import { initDag, renderNeighborBlocks, syncHud, searchFromUrl } from './ui/dag.js';
+import { initDag, renderNeighborBlocks, syncHud, initNav } from './ui/dag.js';
 import { initBytes, sizeDna, drawDna } from './ui/bytes.js';
 import { initShare } from './ui/share.js';
 import { initCallouts } from './ui/callouts.js';
@@ -28,7 +28,7 @@ function boot() {
   initKeyboard();
 
   /* theme from the boot script / storage */
-  state.theme = document.documentElement.getAttribute('data-theme') || 'sketchbook';
+  state.theme = document.documentElement.getAttribute('data-theme') || 'light';
 
   /* A's bootstrap sequence */
   const nerdOn = store.get('kba-nerd') === '1';
@@ -41,7 +41,7 @@ function boot() {
 
   renderNeighborBlocks();         // A calls this once at the end of initV10Hybrid
   syncHud();
-  searchFromUrl();
+  initNav();
 }
 
 boot();

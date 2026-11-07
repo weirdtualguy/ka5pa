@@ -1,13 +1,13 @@
 /* ui/controls.js — A's toolbar & panels, behaviour preserved: station selection,
    inspector readouts, stamp/explode/slow, era flip, nerd mode, sfx synth, themes
-   (sketchbook now default), workload sliders. The Idle Tour button toggles the
+   workload sliders. The Idle Tour button toggles the
    guided flow (guided/flow-ui.js). */
 import { state, computeModelMetrics } from '../engine/render.js';
 import { emit, on as onBus } from '../util/events.js';
 import { store, num } from '../util/format.js';
 import { live } from '../data/api.js';
 import { CAP } from '../data/budgets.js';
-import { announce } from './a11y.js';
+import { announce, revealPlate } from './a11y.js';
 
 /* A's STATION_META, verbatim. */
 export const STATION_META = [
@@ -282,7 +282,13 @@ export function initControls() {
   cdom.stationButtons = Array.from(document.querySelectorAll('[data-station]'));
   cdom.themeButtons = Array.from(document.querySelectorAll('[data-set-theme]'));
 
-  /* themes — sketchbook is the default; A's five keep working */
+  /* themes: reflect the theme the boot script chose (stored or system) */
+  const bootTheme = document.documentElement.getAttribute('data-theme');
+  cdom.themeButtons.forEach(b => {
+    const on = b.getAttribute('data-set-theme') === bootTheme;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
   cdom.themeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const t = btn.getAttribute('data-set-theme');
@@ -290,8 +296,12 @@ export function initControls() {
       document.documentElement.setAttribute('data-theme', t);
       store.set('kba-theme', t);
       const tc = document.querySelector('meta[name="theme-color"]');
-      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.sketchbook);
-      cdom.themeButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-set-theme') === t));
+      if (tc) tc.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.light);
+      cdom.themeButtons.forEach(b => {
+        const on = b.getAttribute('data-set-theme') === t;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       state.sceneDirty = true;
       emit('theme:changed', t);
       announce('theme ' + t);
@@ -299,12 +309,12 @@ export function initControls() {
   });
 
   cdom.stationButtons.forEach(btn => {
-    btn.addEventListener('click', () => selectStation(Number(btn.getAttribute('data-station')), true));
+    btn.addEventListener('click', () => { selectStation(Number(btn.getAttribute('data-station')), true); revealPlate(); });
   });
 
   document.querySelectorAll('[data-jump-station]').forEach(row => {
     const st = Number(row.getAttribute('data-jump-station'));
-    row.addEventListener('click', () => { selectStation(st, true); emit('plate:reveal'); });
+    row.addEventListener('click', () => { selectStation(st, true); revealPlate(); });
     const first = row.querySelector('td');
     if (first && !first.querySelector('button')) {
       const btn = document.createElement('button');
@@ -316,8 +326,8 @@ export function initControls() {
     }
   });
 
-  cdom.btnPrev.addEventListener('click', () => selectStation(state.station - 1, true));
-  cdom.btnNext.addEventListener('click', () => selectStation(state.station + 1, true));
+  cdom.btnPrev.addEventListener('click', () => { selectStation(state.station - 1, true); revealPlate(); });
+  cdom.btnNext.addEventListener('click', () => { selectStation(state.station + 1, true); revealPlate(); });
   cdom.btnExplode.addEventListener('click', toggleExplode);
   cdom.btnMine.addEventListener('click', () => triggerBlockStamp());
   cdom.btnSlow.addEventListener('click', cycleSlowMotion);
@@ -375,4 +385,4 @@ export function initControls() {
   return { paintSfx };
 }
 
-const THEME_COLORS = { sketchbook: '#e3dac8', light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };
+const THEME_COLORS = { light: '#efede7', paper: '#f3f1ec', sepia: '#e6dccf', blueprint: '#081829', dark: '#0a0b0d' };

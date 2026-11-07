@@ -18,10 +18,12 @@ export function announce(text) {
   requestAnimationFrame(() => { announcer.textContent = text; });
 }
 
-/** A's revealPlate(): scroll the figure into view when needed. */
+/** Scroll the figure into view only when less than ~60% of it is visible. */
 export function revealPlate() {
-  const p = document.getElementById('anatomy-plate'), r = p.getBoundingClientRect();
-  if (r.top < 0 || r.bottom > window.innerHeight * 0.9)
+  const st = document.getElementById('iso-stage'), p = document.getElementById('anatomy-plate');
+  const r = st.getBoundingClientRect();
+  const seen = Math.max(0, Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0));
+  if (r.height && seen / r.height < 0.6)
     p.scrollIntoView({ behavior: state.reducedMotion ? 'auto' : 'smooth', block: 'start' });
 }
 

@@ -19,7 +19,6 @@ const zBack = document.getElementById('z-back'), zTip = document.getElementById(
 
 let openTxIdx = -1;
 let txSceneIdx = -1, txSel = null;
-const hopStack = [];
 const moreOv = document.getElementById('more-ov');
 const moreTitle = document.getElementById('more-title');
 const moreList = document.getElementById('more-list');
@@ -28,18 +27,19 @@ const moreList = document.getElementById('more-list');
 export function syncHud() {
   const inTx = txSceneIdx >= 0;
   stageEl.classList.toggle('txview', inTx);
-  zBack.hidden = !inTx && !hopStack.length;
-  zBack.textContent = inTx ? '‹ block' : '‹ back (' + hopStack.length + ')';
+  zBack.hidden = !inTx && !canGoBack();
+  zBack.textContent = '‹ back';
   zTip.hidden = !live.pin;
   zTx.hidden = inTx || state.station !== 2;
 }
 
 /* ---- tx dissection ---- */
-export function openTxScene(idx) {
+export function openTxScene(idx, nav) {
   const txs = (live.block && live.block.transactions) || [];
   if (!txs.length) return;
   txSceneIdx = clamp(idx | 0, 0, txs.length - 1);
   txSel = null; moreOv.hidden = true;
+  if (nav) record(location.hash, { block: live.d && live.d.v.hash, tx: txSceneIdx }, history.state && history.state.tx != null);
   renderTxScene(); syncHud(); sfx.whoosh();
   announce('transaction ' + txSceneIdx + ' opened');
 }
@@ -54,21 +54,44 @@ export const txOpenIndex = () => txSceneIdx;
 /* ---- block loader + search ---- */
 const HEX64 = /(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])/i;
 const setMsg = (t) => { const m = document.getElementById('blk-msg'); if (m) m.textContent = t; };
-const setHash = (h) => { try { history.replaceState(null, '', h ? '#' + h : location.pathname + location.search); } catch (e) { /* file:// or sandbox */ } };
+/* ---- history: every pinned block / opened transaction is a history entry, so the
+   browser and Android back button step through them. history.state = { i, block, tx } ---- */
+let navI = 0;
+let navMode = 'push';                       // 'push' | 'replace' | 'none' (popstate, first load)
+export const canGoBack = () => navI > 0;
+function record(hash, st, replace) {
+  if (navMode === 'none') return;
+  const url = hash && hash !== '#' ? (hash[0] === '#' ? hash : '#' + hash) : location.pathname + location.search;
+  const doReplace = replace || navMode === 'replace';
+  const i = doReplace ? navI : navI + 1;
+  try { history[doReplace ? 'replaceState' : 'pushState']({ i, ...st }, '', url); navI = i; } catch (e) { /* sandboxed */ }
+}
+export function goBack() {
+  const st = history.state || {};
+  if (txSceneIdx >= 0 && (navI === 0 || st.tx == null)) { closeTxScene(); syncHud(); return; }
+  if (navI > 0) history.back();
+}
+function unpin() {
+  live.pin = null; state.follow = true; live.lastHash = '';
+  closeTxScene(); setMsg('');
+  poll(true); syncHud();
+}
+export function goTip() {
+  if (!live.pin) return;
+  record('', {});
+  unpin();
+}
 
 /** Load and pin a block. Returns 'ok', 'missing' (HTTP 404) or 'error'. */
-export async function loadBlock(hash, fromHist, quiet) {
+export async function loadBlock(hash, quiet) {
   const h = (hash || '').trim().toLowerCase();
   if (!/^[0-9a-f]{64}$/.test(h)) { if (!quiet) setMsg('Enter a 64-character block hash.'); return 'error'; }
   const pin = (b, isLive) => {
-    if (!fromHist && live.d && live.d.v.hash && live.d.v.hash !== h) {
-      hopStack.push(live.d.v.hash);
-      if (hopStack.length > 24) hopStack.shift();
-    }
+    const same = live.pin === h;
     live.pin = h; state.follow = false;
     closeTxScene();
+    if (!same) record(h, { block: h });
     applyBlock(b, isLive);
-    setHash(h);
     syncHud();
   };
   const hit = live.ring.find(x => x.h === h);
@@ -96,7 +119,7 @@ export async function searchChain(raw) {
   document.getElementById('search-form').classList.add('busy');
   setMsg('Searching…');
   try {
-    const r = await loadBlock(id, false, true);
+    const r = await loadBlock(id, true);
     if (r === 'ok') { setMsg('Block ' + sh(id)); revealPlate(); return; }
     if (r === 'error') { setMsg('Could not reach the Kaspa API.'); return; }
     let tx;
@@ -105,11 +128,11 @@ export async function searchChain(raw) {
     const blocks = Array.isArray(tx.block_hash) ? tx.block_hash : [];
     if (!blocks.length) { setMsg('Transaction ' + sh(id) + ' is not in a block yet.'); return; }
     for (const bh of blocks) {
-      if (await loadBlock(bh, false, true) !== 'ok') continue;
+      if (await loadBlock(bh, true) !== 'ok') continue;
       const txs = (live.block && live.block.transactions) || [];
       const idx = txs.findIndex(t => t.verboseData && t.verboseData.transactionId === id);
       if (idx >= 0) {
-        openTxIdx = idx; openTxScene(idx);
+        openTxIdx = idx; record(id, { block: bh, tx: idx }); openTxScene(idx);
         setMsg('Transaction ' + sh(id) + ' in block ' + sh(bh));
         revealPlate();
         return;
@@ -122,10 +145,33 @@ export async function searchChain(raw) {
   }
 }
 
-/** Open a search from the URL fragment (#<hash>), so lookups are linkable. */
-export function searchFromUrl() {
+/** Boot: restore history position and open a search from the URL fragment (#<hash>). */
+export function initNav() {
+  navI = (history.state && history.state.i) || 0;
+  try { history.replaceState({ ...(history.state || {}), i: navI }, ''); } catch (e) { /* sandboxed */ }
   const m = location.hash.slice(1);
-  if (HEX64.test(m)) { document.getElementById('blk-in').value = m; searchChain(m); }
+  if (HEX64.test(m)) {
+    document.getElementById('blk-in').value = m;
+    navMode = 'replace';
+    searchChain(m).finally(() => { navMode = 'push'; });
+  }
+  window.addEventListener('popstate', onPop);
+}
+
+async function onPop(e) {
+  const st = e.state || {};
+  navI = st.i || 0;
+  navMode = 'none';
+  try {
+    if (txSceneIdx >= 0 && st.tx == null) closeTxScene();
+    const hm = location.hash.slice(1).match(HEX64);
+    const target = st.block || (hm && hm[0].toLowerCase()) || '';
+    if (target) {
+      if (live.pin !== target) await loadBlock(target, true);
+      if (st.tx != null && txSceneIdx !== st.tx) { openTxIdx = st.tx; openTxScene(st.tx); }
+    } else if (live.pin) unpin();
+    setMsg('');
+  } finally { navMode = 'push'; syncHud(); }
 }
 
 /* ---- isometric 3D mergeset neighbourhood map (A's drawMap) ---- */
@@ -428,7 +474,10 @@ export function initDag() {
   };
   rows.addEventListener('click', act);
   rows.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(e); } });
-  document.getElementById('live-chip').addEventListener('click', () => { state.follow = true; live.lastHash = ''; poll(true); pollNet(); });
+  document.getElementById('live-chip').addEventListener('click', () => {
+    if (live.pin) { goTip(); return; }
+    state.follow = true; live.lastHash = ''; poll(true); pollNet();
+  });
   document.getElementById('live-map').addEventListener('click', (e) => {
     const g = e.target.closest('[data-map-hash]');
     if (g) loadBlock(g.getAttribute('data-map-hash'));
@@ -437,18 +486,9 @@ export function initDag() {
     document.getElementById(id).addEventListener('input', () => { state.follow = false; })
   );
 
-  zBack.onclick = () => {
-    if (txSceneIdx >= 0) { closeTxScene(); return; }
-    const h = hopStack.pop();
-    if (h) loadBlock(h, true);
-    syncHud();
-  };
-  zTip.onclick = () => {
-    hopStack.length = 0; live.pin = null; state.follow = true; live.lastHash = '';
-    closeTxScene(); setMsg(''); setHash('');
-    poll(true); syncHud();
-  };
-  zTx.onclick = () => openTxScene(openTxIdx >= 0 ? openTxIdx : (live.block && live.block.transactions && live.block.transactions.length > 1 ? 1 : 0));
+  zBack.onclick = goBack;
+  zTip.onclick = goTip;
+  zTx.onclick = () => openTxScene(openTxIdx >= 0 ? openTxIdx : (live.block && live.block.transactions && live.block.transactions.length > 1 ? 1 : 0), true);
   document.getElementById('z-dna').onclick = () => {
     document.getElementById('dna-panel').scrollIntoView({ behavior: state.reducedMotion ? 'auto' : 'smooth', block: 'center' });
   };
@@ -503,8 +543,14 @@ export function initDag() {
   document.getElementById('tk-cells').onclick = (e) => {
     const b = e.target.closest('[data-tk]'); if (!b) return;
     const x = live.ring[Number(b.getAttribute('data-tk'))];
-    if (x) { live.pin = x.h; state.follow = false; applyBlock(x.b, live.isLive); sfx.tick(); syncHud(); }
+    if (x) loadBlock(x.h, true).then(() => sfx.tick());
   };
+  document.getElementById('blk-in').addEventListener('paste', () => {
+    setTimeout(() => {
+      const inp = document.getElementById('blk-in');
+      if (HEX64.test(inp.value)) { inp.blur(); searchChain(inp.value); }
+    }, 0);
+  });
   document.getElementById('search-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const inp = document.getElementById('blk-in');
@@ -513,7 +559,7 @@ export function initDag() {
   });
   document.getElementById('tx-list').onclick = (e) => {
     const r = e.target.closest('[data-tx]');
-    if (r) { openTxIdx = Number(r.getAttribute('data-tx')); openTxScene(openTxIdx); revealPlate(); }
+    if (r) { openTxIdx = Number(r.getAttribute('data-tx')); openTxScene(openTxIdx, true); revealPlate(); }
   };
 
   /* scene repaints also refresh neighbours + the open tx (A's wrapper) */

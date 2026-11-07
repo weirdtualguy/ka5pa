@@ -1,7 +1,7 @@
 /* scripts/build.mjs — zero-dependency build (Node 18+, built-ins only).
    dist/kaspa-block.html: stylesheets inlined, the ES-module graph scope-hoisted
-   into one classic <script> (native modules do not load from file://), assets as
-   data URIs. Minifies whitespace and comments only. Duplicate top-level names are
+   into one classic <script> (native modules do not load from file://).
+   Minifies whitespace and comments only. Duplicate top-level names are
    rejected loudly — the bundle relies on one-job modules with named exports. */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -98,10 +98,9 @@ const bundle = 'document.addEventListener(\'DOMContentLoaded\', function () {\n'
 /* ---------- assemble the single file ---------- */
 let html = read('index.html');
 
-/* inline stylesheets (paper-grain via data URI so the file works from file://) */
-const grainUri = 'data:image/svg+xml;utf8,' + encodeURIComponent(read('assets/paper-grain.svg').trim());
+/* inline stylesheets */
 html = html.replace(/<link rel="stylesheet" href="css\/([^"]+)"\s*\/>/g, (_, f) =>
-  `<style>\n${css(read('css/' + f).replace(/\.\.\/assets\/paper-grain\.svg/g, grainUri))}\n</style>`);
+  `<style>\n${css(read('css/' + f))}\n</style>`);
 
 /* inline the module entry as one classic script */
 html = html.replace(/<script type="module" src="js\/main\.js"><\/script>/, `<script>\n${js(bundle)}\n</script>`);

@@ -1,91 +1,10 @@
-/* css/tokens.css — every colour/size as CSS variables; one block per theme. The
-   26 A tokens keep their names; sketchbook adds B's marker palette (--ink, --lead,
-   --wax, --paper, --paper-lit, --marker-*) for the hand-drawn overlays + strip. */
-
-/* ---------- SKETCHBOOK (B's look, default) ---------- */
-:root,
-[data-theme="sketchbook"] {
-  --anatomy-card: #f4efe3;
-  --anatomy-paper: #f4efe3;
-  --anatomy-top: #fdf9f1;
-  --anatomy-shade-0: #d8cdb6;
-  --anatomy-shade-1: #e0d7c2;
-  --anatomy-shade-2: #e9e1cf;
-  --anatomy-shade-3: #f1ead9;
-  --anatomy-face: #2f261e;
-  --anatomy-lit-top: #f6e3c9;
-  --anatomy-lit-shade: #ddba88;
-  --anatomy-hi: #2f261e;
-  --anatomy-mid: #6f6150;
-  --anatomy-lo: #a4977f;
-  --anatomy-faint: #d9cfbb;
-  --anatomy-dot: #8a8174;
-  --anatomy-halo: #e3d9c3;
-  --anatomy-lit: #b23a38;
-  --anatomy-red: #c98d7a;
-  --anatomy-green: #5f9c96;
-  --anatomy-blue: #7d9fc0;
-  --anatomy-purple: #8f7ba6;
-  --anatomy-text: #2f261e;
-  --anatomy-muted: #8a8174;
-  --anatomy-strong: #241c14;
-  --anatomy-weight: 0.9px;
-  --anatomy-halo-opacity: 0.5;
-  --anatomy-hatch: rgba(47, 38, 30, 0.30);
-  --anatomy-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --page-bg: #e3dac8;
-  --panel-bg: #f4efe3;
-  --panel-border: #d8ccb4;
-
-  /* B's sketchbook tokens */
-  --desk: #e3dac8;
-  --paper: #f4efe3;
-  --paper-lit: #fbf6ec;
-  --ink: #2f261e;
-  --lead: #8a8174;
-  --wax: #b04a3a;
-  --red: #b23a38;
-  --gold: #e5b45a;
-  --steel: #c3ccd2;
-  --steel-dark: #93a2ab;
-  --brass: #c9a05a;
-  --teal: #5f9c96;
-  --plum: #8f7ba6;
-  --tray: #c8b28a;
-  --marker-paper: #f1e7d4;
-  --marker-gold: #d9a441;
-  --marker-teal: #5f9c96;
-  --marker-plum: #8f7ba6;
-
-  /* byte-strip segment colours (B's marker ramp, via fields.js key) */
-  --bs-version: #93a2ab;
-  --bs-parents: #d8cdb6;
-  --bs-hashMerkle: #c9a05a;
-  --bs-seqCommit: #5f9c96;
-  --bs-utxoCommit: #8f7ba6;
-  --bs-timestamp: #c3ccd2;
-  --bs-bits: #c3ccd2;
-  --bs-nonce: #c3ccd2;
-  --bs-daaScore: #c3ccd2;
-  --bs-blueScore: #c3ccd2;
-  --bs-blueWork: #c3ccd2;
-  --bs-pruningPoint: #6b6660;
-
-  /* depth model (A's v10.1 tokens, tuned for paper) */
-  --hl: rgba(255, 253, 246, 0.9);
-  --drop: rgba(52, 42, 26, 0.16);
-  --drop-2: rgba(52, 42, 26, 0.08);
-  --floor: rgba(52, 42, 26, 0.20);
-  --grid: color-mix(in srgb, var(--anatomy-lo) 34%, transparent);
-
-  --font-ui: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-title: 'Young Serif', Georgia, serif;
-  --font-label: 'Cutive Mono', 'Courier Prime', 'Courier New', monospace;
-  --font-hand: 'Gaegu', 'DM Sans', cursive;
-  --font-num: 'JetBrains Mono', ui-monospace, monospace;
-}
+/* css/tokens.css — every colour/size as CSS variables; one block per theme.
+   Light is the default (:root). The --ink/--lead/--wax/--marker-* tokens used by
+   the hand-drawn overlays alias each theme's --anatomy-* values (bottom of file). */
 
 /* ---------- LIGHT (A's original) ---------- */
+/* light is the default */
+:root,
 [data-theme="light"] {
   --anatomy-card: #f7f6f2;
   --anatomy-paper: #f7f6f2;
@@ -317,10 +236,9 @@
 
 /* ---------- B's sketch tokens, remapped per theme ----------
    The sketch pen and the hand-drawn overlays emit var(--ink)/var(--lead)/… with
-   no fallback, and sketchbook's values live on :root — without this block every
-   other theme would inherit warm dark ink (unreadable on dark/blueprint).
-   Each token aliases the theme's own --anatomy-* value, so fills stay legible
-   everywhere. Fills/colours only — never geometry. */
+   no fallback. Each token aliases the theme's own --anatomy-* value, so fills
+   stay legible in every theme. Fills/colours only — never geometry. */
+:root,
 [data-theme="light"],
 [data-theme="paper"],
 [data-theme="sepia"],

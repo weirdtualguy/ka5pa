@@ -17,7 +17,7 @@ export const QUIET = 0.0006;
 /* A's shared state — same fields, same defaults (tourActive is now driven by the
    guided flow, which replaces the Idle Tour). */
 export const state = {
-  theme: 'sketchbook',
+  theme: 'light',
   station: 0,
   tourActive: false,
   tourTimer: 0,
